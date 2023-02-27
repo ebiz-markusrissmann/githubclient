@@ -1,13 +1,11 @@
 {
-  "name": "github_api",
+  "name": "githubclient",
   "version": "1.0.0",
-  "description": "Testing github api",
-  "main": "app.ts",
-  "license": "MIT",
-  "private": true,
+  "description": "Testing github api", 
+  "license": "MIT",  
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ebiz-markusrissmann/mwaa-pitch.git"
+    "url": "https://github.com/ebiz-markusrissmann/githubclient.git"
   },
   "scripts": {
     "test": "shx rm -fr lib && tsc --noEmit --project tsconfig.jest.json && jest -c jest.unit.config.ts --all --ci --passWithNoTests --maxWorkers=4",
@@ -39,11 +37,8 @@
     "registry": "https://npm.pkg.github.com"
   },
   "bugs": {
-    "url": "https://github.com/ebiz-markusrissmann/mwaa-pitch/issues"
+    "url": "https://github.com/ebiz-markusrissmann/GithubClient/issues"
   },
-  "homepage": "https://github.com/ebiz-markusrissmann/mwaa-pitch#readme",
-  "directories": {
-    "test": "test"
-  },
+  "homepage": "https://github.com/ebiz-markusrissmann/GithubClient#readme",  
   "author": "markusrissmann@eBizCon.de"
 }
