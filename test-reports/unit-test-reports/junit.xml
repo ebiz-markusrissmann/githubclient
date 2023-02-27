@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="6" failures="0" errors="0" time="5.151">
+  <testsuite name="Test GithubSecrets" errors="0" failures="0" skipped="0" timestamp="2023-02-27T14:16:36" time="2.981" tests="3">
+    <testcase classname="Test GithubSecrets ListRepositorySecrets" name="Test GithubSecrets ListRepositorySecrets" time="0.004">
+    </testcase>
+    <testcase classname="Test GithubSecrets Test GetRepositorySecret" name="Test GithubSecrets Test GetRepositorySecret" time="0.001">
+    </testcase>
+    <testcase classname="Test GithubSecrets Test CreateOrUpdateSecret" name="Test GithubSecrets Test CreateOrUpdateSecret" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="Test GithubClient" errors="0" failures="0" skipped="0" timestamp="2023-02-27T14:16:36" time="4.695" tests="3">
+    <testcase classname="Test GithubClient Test ListWorkflows" name="Test GithubClient Test ListWorkflows" time="0.002">
+    </testcase>
+    <testcase classname="Test GithubClient Test GetWorkflow" name="Test GithubClient Test GetWorkflow" time="0">
+    </testcase>
+    <testcase classname="Test GithubClient Test TriggerWorkflow" name="Test GithubClient Test TriggerWorkflow" time="0">
+    </testcase>
+  </testsuite>
+</testsuites>

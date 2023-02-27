@@ -1,0 +1,10 @@
+{
+    "jestrunner.jestCommand": "yarn test",
+    "jestrunner.debugOptions": { "args": [
+        "--no-cache",
+        "-c",
+        "jest.unit.config.ts"
+    ]
+    
+    }
+}

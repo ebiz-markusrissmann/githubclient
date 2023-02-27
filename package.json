@@ -5,23 +5,45 @@
   "main": "app.ts",
   "license": "MIT",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ebiz-markusrissmann/mwaa-pitch.git"
+  },
   "scripts": {
+    "test": "shx rm -fr lib && tsc --noEmit --project tsconfig.jest.json && jest -c jest.unit.config.ts --all --ci --passWithNoTests --maxWorkers=4",
     "eslint": "eslint --ext .ts,.tsx --fix --no-error-on-unmatched-pattern src test build-tools",
-    "prettier": "prettier -w src/"
+    "prettier": "prettier -w src/ test/"
   },
   "dependencies": {
+    "libsodium-wrappers": "^0.7.11",
     "octokit": "^2.0.14",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
   },
   "devDependencies": {
+    "@types/jest": "^29.4.0",
+    "@types/libsodium-wrappers": "^0.7.10",
     "@typescript-eslint/eslint-plugin": "^5.53.0",
     "@typescript-eslint/parser": "^5.53.0",
     "eslint": "^8.35.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-import": "^2.27.5",
     "jest": "^29.4.3",
+    "jest-junit": "^15.0.0",
+    "jest-mock-extended": "^3.0.2",
     "prettier": "^2.8.4",
+    "shx": "^0.3.4",
     "ts-jest": "^29.0.5"
-  }
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "bugs": {
+    "url": "https://github.com/ebiz-markusrissmann/mwaa-pitch/issues"
+  },
+  "homepage": "https://github.com/ebiz-markusrissmann/mwaa-pitch#readme",
+  "directories": {
+    "test": "test"
+  },
+  "author": "markusrissmann@eBizCon.de"
 }
