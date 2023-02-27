@@ -1,0 +1,9 @@
+/.vs/
+/.vscode/
+/cdk.out/
+/coverage
+/dist
+/lib
+/node_modules/
+/test-reports/
+
