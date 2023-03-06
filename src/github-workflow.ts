@@ -3,9 +3,11 @@ import { workflow } from './models/workflow';
 
 export class GithubWorkflow {
   private octokit: Octokit;
+  private apiVersion: string;
 
-  constructor(octokit: Octokit) {
+  constructor(octokit: Octokit, apiVersion: string) {
     this.octokit = octokit;
+    this.apiVersion = apiVersion;
   }
 
   /**
@@ -20,7 +22,7 @@ export class GithubWorkflow {
       owner: owner,
       repo: repo,
       headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
+        'X-GitHub-Api-Version': this.apiVersion,
       },
     });
 
@@ -49,8 +51,9 @@ export class GithubWorkflow {
    * @param {string} repo - The name of the repository
    * @param {string} workflowName - The name of the workflow to trigger
    * @param {string} branch - The name of the branch from which the code is to be taken
+   * @param {string} inputs - Input keys and values configured in the workflow file. The maximum number of properties is 10. Any default properties configured in the workflow file will be used when inputs are omitted.
    */
-  public async TriggerWorkflow(owner: string, repo: string, workflowName: string, branch: string): Promise<void> {
+  public async TriggerWorkflow(owner: string, repo: string, workflowName: string, branch: string, inputs?: any): Promise<void> {
     const workflows = await this.ListWorkflows(owner, repo);
     const wf = workflows.find((a) => a.name === workflowName);
 
@@ -60,8 +63,9 @@ export class GithubWorkflow {
         repo: repo,
         workflow_id: wf!.id,
         ref: branch,
+        inputs: inputs,
         headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
+          'X-GitHub-Api-Version': this.apiVersion,
         },
       });
     }

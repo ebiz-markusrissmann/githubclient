@@ -55,4 +55,14 @@ export interface IGithubVariables {
    * @returns 204 if deleted
    */
   DeleteRepositoryVariable(owner: string, repo: string, variableName: string): Promise<number>;
+
+  /**
+   * Creates or updates a repository variable
+   * @param {string} owner - The owner of the repository
+   * @param {string} repo - The name of the repository
+   * @param {string} variableName - The name of the variable to be gathered
+   * @param {string} value - The value of the repository variable
+   * @returns 201 if successfull created, otherwise 204 if updated
+   */
+  CreateOrUpdateRepositoryVariable(owner: string, repo: string, variableName: string, value: string): Promise<number>;
 }

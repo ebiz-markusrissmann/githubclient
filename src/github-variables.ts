@@ -4,9 +4,11 @@ import { githubvariable } from './models/variables';
 
 export class GithubVariables implements IGithubVariables {
   private octokit: Octokit;
+  private apiVersion: string;
 
-  constructor(octokit: Octokit) {
+  constructor(octokit: Octokit, apiVersion: string) {
     this.octokit = octokit;
+    this.apiVersion = apiVersion;
   }
 
   /**
@@ -21,7 +23,7 @@ export class GithubVariables implements IGithubVariables {
       owner: owner,
       repo: repo,
       headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
+        'X-GitHub-Api-Version': this.apiVersion,
       },
     });
 
@@ -47,7 +49,7 @@ export class GithubVariables implements IGithubVariables {
       name: variableName,
       value: value,
       headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
+        'X-GitHub-Api-Version': this.apiVersion,
       },
     });
 
@@ -67,7 +69,7 @@ export class GithubVariables implements IGithubVariables {
       repo: repo,
       name: variableName,
       headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
+        'X-GitHub-Api-Version': this.apiVersion,
       },
     });
     return response.data;
@@ -87,7 +89,7 @@ export class GithubVariables implements IGithubVariables {
         repo: repo,
         name: variableName,
         headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
+          'X-GitHub-Api-Version': this.apiVersion,
         },
       });
 
@@ -112,11 +114,27 @@ export class GithubVariables implements IGithubVariables {
       name: variableName,
       value: value,
       headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
+        'X-GitHub-Api-Version': this.apiVersion,
       },
     });
 
     return response.status;
+  }
+
+  /**
+   * Creates or updates a specific repository variable
+   * @param {string} owner - The owner of the repository
+   * @param {string} repo - The name of the repository
+   * @param {string} variableName - The name of the variable to be gathered
+   * @param {string} value - The value of the repository variable
+   * @returns
+   */
+  public async CreateOrUpdateRepositoryVariable(owner: string, repo: string, variableName: string, value: string): Promise<number> {
+    if (await this.RepositoryVariableExists(owner, repo, variableName)) {
+      return await this.UpdateRepositoryVariable(owner, repo, variableName, value);
+    } else {
+      return await this.CreateRepositoryVariable(owner, repo, variableName, value);
+    }
   }
 
   /**
@@ -132,7 +150,7 @@ export class GithubVariables implements IGithubVariables {
       repo: repo,
       name: variableName,
       headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
+        'X-GitHub-Api-Version': this.apiVersion,
       },
     });
 

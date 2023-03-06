@@ -24,6 +24,7 @@ export interface IGithubWorkflow {
    * @param {string} repo - The name of the repository
    * @param {string} workflowName - The name of the workflow to trigger
    * @param {string} branch - The name of the branch from which the code is to be taken
+   * @param {string} inputs - Input keys and values configured in the workflow file. The maximum number of properties is 10. Any default properties configured in the workflow file will be used when inputs are omitted.
    */
-  TriggerWorkflow(owner: string, repo: string, workflowName: string, branch: string): Promise<void>;
+  TriggerWorkflow(owner: string, repo: string, workflowName: string, branch: string, inputs?: any): Promise<void>;
 }
