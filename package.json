@@ -1,11 +1,11 @@
 {
-  "name": "@ebiz-markusrissmann/github",
+  "name": "github-actions-client",
   "version": "1.0.1",
   "description": "Testing github api",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ebiz-markusrissmann/githubclient.git"
+    "url": "git+https://github.com/ebiz-markusrissmann/githubclient.git"
   },
   "scripts": {
     "test": "shx rm -fr lib && tsc --noEmit --project tsconfig.jest.json && jest -c jest.unit.config.ts --all --ci --passWithNoTests --maxWorkers=4",
@@ -42,5 +42,11 @@
     "url": "https://github.com/ebiz-markusrissmann/githubclient/issues"
   },
   "homepage": "https://github.com/ebiz-markusrissmann/githubclient/#readme",
-  "author": "markusrissmann@eBizCon.de"
+  "author": "markusrissmann@eBizCon.de",
+  "main": "./src/github.ts",
+  "keywords": [
+    "Github",
+    "Actions",
+    "Client"
+  ]
 }
