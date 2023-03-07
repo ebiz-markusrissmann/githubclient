@@ -57,6 +57,7 @@
     "lib/**/*", "./src/**/*"
   ],
   "exports": {
+    "./github": "./lib/src/github.ts",
     ".": {
       "import": {
         "types": "./lib/esm/types/github.d.ts",
