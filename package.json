@@ -1,6 +1,6 @@
 {
   "name": "@markusrissmann/github-actions-client",
-  "version": "0.0.0-development",
+  "version": "1.0.4",
   "description": "Testing github api",
   "license": "MIT",
   "repository": {
@@ -70,8 +70,6 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "release": {
-    "branches": ["main"]
   }
+  
 }
