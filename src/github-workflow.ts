@@ -1,5 +1,5 @@
 import { Octokit } from 'octokit';
-import { workflow } from './models/workflow';
+import { components } from '@octokit/openapi-types/types';
 
 export class GithubWorkflow {
   private octokit: Octokit;
@@ -16,8 +16,7 @@ export class GithubWorkflow {
    * @param {string} repo - The name of the repository
    * @returns {workflow[]}
    */
-  public async ListWorkflows(owner: string, repo: string): Promise<workflow[]> {
-    const retVal: workflow[] = [];
+  public async ListWorkflows(owner: string, repo: string): Promise<components['schemas']['workflow'][]> {
     const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/workflows', {
       owner: owner,
       repo: repo,
@@ -26,11 +25,7 @@ export class GithubWorkflow {
       },
     });
 
-    response.data.workflows.forEach((wf) => {
-      retVal.push(wf);
-    });
-
-    return retVal;
+    return response.data.workflows;
   }
   /**
    * Gets all infos to a specific workflow
@@ -39,7 +34,7 @@ export class GithubWorkflow {
    * @param {string} workflowName - The name of the workflow to trigger
    * @returns The requested workflow, if not found undefined
    */
-  public async GetWorkflow(owner: string, repo: string, workflowName: string): Promise<workflow | undefined> {
+  public async GetWorkflow(owner: string, repo: string, workflowName: string): Promise<components['schemas']['workflow'] | undefined> {
     const workflows = await this.ListWorkflows(owner, repo);
     const wf = workflows.find((a) => a.name === workflowName);
     return wf;
@@ -69,5 +64,23 @@ export class GithubWorkflow {
         },
       });
     }
+  }
+
+  /**
+   *
+   * @param {string} owner - The owner of the repository
+   * @param {string} repo - The name of the repository
+   * @returns
+   */
+  public async ListWorkflowRuns(owner: string, repo: string): Promise<components['schemas']['workflow-run'][]> {
+    const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/runs', {
+      owner: owner,
+      repo: repo,
+      headers: {
+        'X-GitHub-Api-Version': this.apiVersion,
+      },
+    });
+
+    return response.data.workflow_runs;
   }
 }

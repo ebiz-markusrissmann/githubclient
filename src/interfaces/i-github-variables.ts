@@ -1,4 +1,4 @@
-import { githubvariable } from '../models/variables';
+import { components } from '@octokit/openapi-types/types';
 
 export interface IGithubVariables {
   /**
@@ -7,7 +7,7 @@ export interface IGithubVariables {
    * @param {string} repo - The name of the repository
    * @returns All variables of the repository
    */
-  ListRepositoryVariables(owner: string, repo: string): Promise<githubvariable[]>;
+  ListRepositoryVariables(owner: string, repo: string): Promise<components['schemas']['actions-variable'][]>;
 
   /**
    * Creates a new repository variable
@@ -26,7 +26,7 @@ export interface IGithubVariables {
    * @param {string} variableName - The name of the variable to be gathered
    * @returns The environment variable
    */
-  GetRepositoryVariable(owner: string, repo: string, variableName: string): Promise<githubvariable>;
+  GetRepositoryVariable(owner: string, repo: string, variableName: string): Promise<components['schemas']['actions-variable']>;
 
   /**
    * Checks if a specific repository variable exists

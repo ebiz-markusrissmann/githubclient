@@ -1,5 +1,5 @@
 import { Octokit } from 'octokit';
-import { githubSecret } from './models/secret';
+import { components } from '@octokit/openapi-types/types';
 import { base64_variants, crypto_box_seal, from_base64, from_string, ready, to_base64 } from 'libsodium-wrappers';
 import { IGithubSecret } from './interfaces/i-github-secrets';
 import { StatusCodes } from 'http-status-codes/build/cjs/status-codes';
@@ -20,9 +20,8 @@ export class GithubSecrets implements IGithubSecret {
    * @param {string} repo - The name of the repository
    * @returns A list of all secrets
    */
-  public async ListRepositorySecrets(owner: string, repo: string): Promise<githubSecret[]> {
+  public async ListRepositorySecrets(owner: string, repo: string): Promise<components['schemas']['actions-secret'][]> {
     try {
-      const retVal: githubSecret[] = [];
       const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/secrets', {
         owner: owner,
         repo: repo,
@@ -31,11 +30,7 @@ export class GithubSecrets implements IGithubSecret {
         },
       });
 
-      response.data.secrets.forEach((secret) => {
-        retVal.push(secret);
-      });
-
-      return retVal;
+      return response.data.secrets;
     } catch (err: any) {
       if (err.status === StatusCodes.NOT_FOUND) {
         const error: GithubClientError = {
@@ -56,7 +51,7 @@ export class GithubSecrets implements IGithubSecret {
    * @param {string} secretName - The name of the secret
    * @returns The secret itself without value
    */
-  public async GetRepositorySecret(owner: string, repo: string, secretName: string): Promise<githubSecret | undefined> {
+  public async GetRepositorySecret(owner: string, repo: string, secretName: string): Promise<components['schemas']['actions-secret']> {
     try {
       const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/secrets/{secret_name}', {
         owner: owner,
@@ -80,7 +75,7 @@ export class GithubSecrets implements IGithubSecret {
     }
   }
 
-  async GetPublicKey(owner: string, repo: string) {
+  async GetPublicKey(owner: string, repo: string): Promise<components['schemas']['actions-public-key']> {
     try {
       const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/secrets/public-key', {
         owner: owner,

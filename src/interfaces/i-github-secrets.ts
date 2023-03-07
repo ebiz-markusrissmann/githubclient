@@ -1,4 +1,4 @@
-import { githubSecret } from '../models/secret';
+import { components } from '@octokit/openapi-types/types';
 
 export interface IGithubSecret {
   /**
@@ -18,7 +18,7 @@ export interface IGithubSecret {
    * @param {string} secretName - The name of the secret
    * @returns The secret itself without value
    */
-  GetRepositorySecret(owner: string, repo: string, secretName: string): Promise<githubSecret | undefined>;
+  GetRepositorySecret(owner: string, repo: string, secretName: string): Promise<components['schemas']['actions-secret']>;
 
   /**
    * Deletes a repository secret
@@ -35,5 +35,5 @@ export interface IGithubSecret {
    * @param {string} repo - The name of the repository
    * @returns A list of all secrets
    */
-  ListRepositorySecrets(owner: string, repo: string): Promise<githubSecret[]>;
+  ListRepositorySecrets(owner: string, repo: string): Promise<components['schemas']['actions-secret'][]>;
 }

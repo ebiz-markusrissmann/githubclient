@@ -112,3 +112,4 @@ lib/
 Editor settings
 .vscode/
 tsconfig.json
+src/app.ts

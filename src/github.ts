@@ -1,13 +1,11 @@
 import { Octokit } from 'octokit';
+import { components } from '@octokit/openapi-types/types';
 import { GithubSecrets } from './github-secrets';
 import { GithubVariables } from './github-variables';
 import { GithubWorkflow } from './github-workflow';
 import { IGithubClient } from './interfaces/i-github-client';
 import { IGithubVariables } from './interfaces/i-github-variables';
 import { IGithubWorkflow } from './interfaces/i-github-workflows';
-import { githubSecret } from './models/secret';
-import { githubvariable } from './models/variables';
-import { workflow } from './models/workflow';
 
 export class GithubClient implements IGithubClient {
   public octokitClient: Octokit;
@@ -32,7 +30,7 @@ export class GithubClient implements IGithubClient {
    * Get all workflows of a specific repository and a specific owner
    * @returns
    */
-  public async ListWorkflows(): Promise<workflow[]> {
+  public async ListWorkflows(): Promise<components['schemas']['workflow'][]> {
     return await this.githubWorkFlow.ListWorkflows(this.github_username, this.github_repository);
   }
   /**
@@ -40,7 +38,7 @@ export class GithubClient implements IGithubClient {
    * @param {string} workflowName - The name of the workflow to trigger
    * @returns The requested workflow, if not found undefined
    */
-  public async GetWorkflow(workflowName: string): Promise<workflow | undefined> {
+  public async GetWorkflow(workflowName: string): Promise<components['schemas']['workflow'] | undefined> {
     return await this.githubWorkFlow.GetWorkflow(this.github_username, this.github_repository, workflowName);
   }
 
@@ -57,7 +55,7 @@ export class GithubClient implements IGithubClient {
    * List all repository variables identified by owner and repository
    * @returns All variables of the repository
    */
-  public async ListRepositoryVariables(): Promise<githubvariable[]> {
+  public async ListRepositoryVariables(): Promise<components['schemas']['actions-variable'][]> {
     return await this.githubVariables.ListRepositoryVariables(this.github_username, this.github_repository);
   }
 
@@ -76,7 +74,7 @@ export class GithubClient implements IGithubClient {
    * @param {string} variableName - The name of the variable to be gathered
    * @returns The environment variable
    */
-  public async GetRepositoryVariable(variableName: string): Promise<githubvariable> {
+  public async GetRepositoryVariable(variableName: string): Promise<components['schemas']['actions-variable']> {
     return await this.githubVariables.GetRepositoryVariable(this.github_username, this.github_repository, variableName);
   }
 
@@ -122,7 +120,7 @@ export class GithubClient implements IGithubClient {
    * List all repository secrets
    * @returns A list of all secrets
    */
-  public async ListRepositorySecrets(): Promise<githubSecret[]> {
+  public async ListRepositorySecrets(): Promise<components['schemas']['actions-secret'][]> {
     return await this.githubSecrets.ListRepositorySecrets(this.github_username, this.github_repository);
   }
 
@@ -131,7 +129,7 @@ export class GithubClient implements IGithubClient {
    * @param {string} secretName - The name of the secret
    * @returns The secret itself without value
    */
-  public async GetRepositorySecret(secretName: string): Promise<githubSecret | undefined> {
+  public async GetRepositorySecret(secretName: string): Promise<components['schemas']['actions-secret'] | undefined> {
     return await this.githubSecrets.GetRepositorySecret(this.github_username, this.github_repository, secretName);
   }
 
@@ -152,5 +150,13 @@ export class GithubClient implements IGithubClient {
    */
   public async DeleteRepositorySecret(secretName: string): Promise<number> {
     return await this.githubSecrets.DeleteRepositorySecret(this.github_username, this.github_repository, secretName);
+  }
+
+  /**
+   *
+   * @returns
+   */
+  public async ListWorkflowRuns(): Promise<components['schemas']['workflow-run'][]> {
+    return await this.githubWorkFlow.ListWorkflowRuns(this.github_username, this.github_repository);
   }
 }
