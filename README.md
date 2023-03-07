@@ -5,19 +5,19 @@ This library is a wrpper library that can be used to execute actions in Github A
 ## Installation
 
 ### npm
-```
-npm i @markusrissmann/github-actions-client 
+```ps
+npm i github-actions-client 
 ```
 
 ### yarn
-```
-yarn add @markusrissmann/github-actions-client
+```ps
+yarn add github-actions-client
 ```
 
 ## Usage
 
 
-```
+```ts
 import { GithubClient } from '@markusrissmann/github-actions-client'
 
 const github_username = 'ebiz-markusrissmann';
