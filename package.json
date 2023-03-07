@@ -1,16 +1,22 @@
 {
-  "name": "github-actions-client",
-  "version": "1.0.1",
+  "name": "@markusrissmann/github-actions-client",
+  "version": "0.0.0-development",
   "description": "Testing github api",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ebiz-markusrissmann/githubclient.git"
-  },
+    "url": "https://github.com/ebiz-markusrissmann/githubclient.git"
+  },  
   "scripts": {
     "test": "shx rm -fr lib && tsc --noEmit --project tsconfig.jest.json && jest -c jest.unit.config.ts --all --ci --passWithNoTests --maxWorkers=4",
     "eslint": "eslint --ext .ts,.tsx --fix --no-error-on-unmatched-pattern src test build-tools",
-    "prettier": "prettier -w src/ test/"
+    "prettier": "prettier -w src/ test/",
+    "clean": "shx rm -rf ./lib",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -p ./tsconfig.esm.json",
+    "build:cjs": "tsc -p ./tsconfig.cjs.json",
+    "prepack": "npm run build",
+    "semantic-release": "semantic-release"
   },
   "dependencies": {
     "http-status-codes": "^2.2.0",
@@ -32,21 +38,40 @@
     "jest-junit": "^15.0.0",
     "jest-mock-extended": "^3.0.3",
     "prettier": "^2.8.4",
+    "semantic-release": "^20.1.1",
     "shx": "^0.3.4",
     "ts-jest": "^29.0.5"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
   },
   "bugs": {
     "url": "https://github.com/ebiz-markusrissmann/githubclient/issues"
   },
   "homepage": "https://github.com/ebiz-markusrissmann/githubclient/#readme",
-  "author": "markusrissmann@eBizCon.de",
+  "author": "markus.rissmann@eBizCon.de",
   "main": "./src/github.ts",
   "keywords": [
     "Github",
     "Actions",
     "Client"
-  ]
+  ],
+  "files": [
+    "lib/**/*"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/esm/types/github.d.ts",
+        "default": "./lib/esm/github.mjs"
+      },
+      "require": {
+        "types": "./lib/cjs/types/github.d.ts",
+        "default": "./lib/cjs/github.js"
+      }
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "release": {
+    "branches": ["main"]
+  }
 }

@@ -107,6 +107,8 @@ dist
 test/
 test-reports/unit-test-reports/junit.xml
 
+lib/
 
 Editor settings
 .vscode/
+tsconfig.json
