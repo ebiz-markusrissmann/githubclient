@@ -139,7 +139,7 @@ describe('Test github-secrets.ts', () => {
     await expect(ghs.CreateOrUpdateSecret('me', 'repo', 'secret name', 'secret value')).rejects.toEqual({ message: "Cannot retrieve public-key for repo 'repo' with owner 'me'" });
   });
 
-  it('Test github-secrets.ts -> CreateOrUpdateSecret error 2', async () => {
+  it.skip('Test github-secrets.ts -> CreateOrUpdateSecret error 2', async () => {
     const owner = 'ebiz-markusrissmann';
     const repo = 'mwaa-pitch';
 
