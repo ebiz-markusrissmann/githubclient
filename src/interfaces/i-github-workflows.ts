@@ -42,4 +42,13 @@ export interface IGithubWorkflow {
    * @param {number} run_id - The unique identifier of the workflow run
    */
   GetWorkflowRun(owner: string, repo: string, run_id: number): Promise<components['schemas']['workflow-run']>;
+
+
+  /**
+   * Gets a redirect URL to download an archive of log files for a workflow run. This link expires after 1 minute.
+   * @param {string} owner - The owner of the repository
+   * @param {string} repo - The name of the repository
+   * @param {number} run_id - The unique identifier of the workflow run
+   */
+  DownloadWorkflowRunLogs(owner: string, repo: string, run_id: number): Promise<string | undefined>
 }

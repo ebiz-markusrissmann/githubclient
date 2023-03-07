@@ -163,4 +163,13 @@ export class GithubClient implements IGithubClient {
   public async GetWorkflowRun(run_id: number): Promise<components['schemas']['workflow-run']> {
     return await this.githubWorkFlow.GetWorkflowRun(this.github_username, this.github_repository, run_id);
   }
+
+  /**
+   * Gets a redirect URL to download an archive of log files for a workflow run. This link expires after 1 minute.
+   * @param {number} run_id - The unique identifier of the workflow run
+   * @returns 
+   */
+  public async DownloadWorkflowRunLogs(run_id: number): Promise<string | undefined> {
+    return await this.githubWorkFlow.DownloadWorkflowRunLogs(this.github_username, this.github_repository, run_id);
+  }
 }

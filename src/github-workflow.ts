@@ -102,4 +102,27 @@ export class GithubWorkflow {
     });
     return response.data;
   }
+
+  /**
+   * Gets a redirect URL to download an archive of log files for a workflow run. This link expires after 1 minute.
+  * @param {string} owner - The owner of the repository
+   * @param {string} repo - The name of the repository
+   * @param {number} run_id - The unique identifier of the workflow run
+   * @returns 
+   */
+  public async DownloadWorkflowRunLogs(owner: string, repo: string, run_id: number): Promise<string | undefined> {
+    const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}/logs', {
+      owner: owner,
+      repo: repo,
+      run_id: run_id,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    });
+
+    if (response.status === 302) {
+      return response.headers.location;
+    }
+    return undefined;
+  }
 }
