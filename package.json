@@ -54,7 +54,7 @@
     "Client"
   ],
   "files": [
-    "lib/**/*"
+    "lib/**/*", "./src/**/*"
   ],
   "exports": {
     ".": {
