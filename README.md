@@ -1,6 +1,6 @@
 # github-actions-client
 
-This library is a wrpper library that can be used to execute actions in Github Actions.
+This library is a wrapper library that can be used to execute actions in Github Actions.
 
 ## Installation
 
