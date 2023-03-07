@@ -34,4 +34,12 @@ export interface IGithubWorkflow {
    * @param {string} repo - The name of the repository
    */
   ListWorkflowRuns(owner: string, repo: string): Promise<components['schemas']['workflow-run'][]>;
+
+  /**
+   *
+   * @param {string} owner - The owner of the repository
+   * @param {string} repo - The name of the repository
+   * @param {number} run_id - The unique identifier of the workflow run
+   */
+  GetWorkflowRun(owner: string, repo: string, run_id: number): Promise<components['schemas']['workflow-run']>;
 }

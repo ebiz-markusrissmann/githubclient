@@ -28,8 +28,8 @@ describe('Test github-secrets.ts', () => {
 
     const githbuSecretResponse = {
       total_count: 2,
-      secrets: [secret1, secret2]
-    }
+      secrets: [secret1, secret2],
+    };
 
     const octokitResponse = OctokitResponseBuilder.getResponse(StatusCodes.OK, '', githbuSecretResponse);
 

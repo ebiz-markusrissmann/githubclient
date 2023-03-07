@@ -159,4 +159,8 @@ export class GithubClient implements IGithubClient {
   public async ListWorkflowRuns(): Promise<components['schemas']['workflow-run'][]> {
     return await this.githubWorkFlow.ListWorkflowRuns(this.github_username, this.github_repository);
   }
+
+  public async GetWorkflowRun(run_id: number): Promise<components['schemas']['workflow-run']> {
+    return await this.githubWorkFlow.GetWorkflowRun(this.github_username, this.github_repository, run_id);
+  }
 }
