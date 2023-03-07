@@ -1,4 +1,4 @@
-import { workflow } from '../models/workflow';
+import { components } from '@octokit/openapi-types/types';
 
 export interface IGithubClient {
   /**
@@ -7,7 +7,7 @@ export interface IGithubClient {
    * @param {string} repo - The name of the repository
    * @returns
    */
-  ListWorkflows(owner: string, repo: string): Promise<workflow[]>;
+  ListWorkflows(owner: string, repo: string): Promise<components['schemas']['workflow'][]>;
 
   /**
    * Gets all infos to a specific workflow
@@ -16,7 +16,7 @@ export interface IGithubClient {
    * @param {string} workflowName - The name of the workflow to trigger
    * @returns The requested workflow, if not found undefined
    */
-  GetWorkflow(owner: string, repo: string, workflowName: string): Promise<workflow | undefined>;
+  GetWorkflow(owner: string, repo: string, workflowName: string): Promise<components['schemas']['workflow'] | undefined>;
 
   /**
    *
