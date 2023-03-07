@@ -143,7 +143,7 @@ export class GithubActionsClient implements IGithubActionsClient {
   /**
    * Create or update a repository secret
    * @param {string} secretName  The name of the secret
-   * @param {string} secretValue  The plan text value of the secret
+   * @param {string} secretValue  The plain text value of the secret
    * @returns 204, if successful
    */
   public async CreateOrUpdateSecret(secretName: string, secretValue: string): Promise<number> {

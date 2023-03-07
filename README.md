@@ -27,13 +27,13 @@ async function main(): Promise<void> {
   try {
     const ghc = new GithubActionsClient(github_username, github_repository);
 
-    ghc.CreateOrUpdateSecret('SecretName1', 'SecretValue1');
-    ghc.CreateOrUpdateSecret('SecretName2', 'SecretValue2');
-    ghc.CreateOrUpdateRepositoryVariable('VariableName1', 'eu-central-1');
-    ghc.CreateOrUpdateRepositoryVariable('VariableName2', '1');
+    await ghc.CreateOrUpdateSecret('SecretName1', 'SecretValue1');
+    await ghc.CreateOrUpdateSecret('SecretName2', 'SecretValue2');
+    await ghc.CreateOrUpdateRepositoryVariable('VariableName1', 'eu-central-1');
+    await ghc.CreateOrUpdateRepositoryVariable('VariableName2', '1');
    
 
-    ghc.TriggerWorkflow(/*wokflow name */ 'main', /* branch */ 'main');
+    await ghc.TriggerWorkflow(/*wokflow name */ 'main', /* branch */ 'main');
   } catch (err: any) {
     throw err;
   }
