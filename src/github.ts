@@ -7,7 +7,7 @@ import { IGithubClient } from './interfaces/i-github-client';
 import { IGithubVariables } from './interfaces/i-github-variables';
 import { IGithubWorkflow } from './interfaces/i-github-workflows';
 
-export class GithubClient implements IGithubClient {
+export class GithubActionsClient implements IGithubClient {
   public octokitClient: Octokit;
   githubWorkFlow: IGithubWorkflow;
   githubVariables: IGithubVariables;

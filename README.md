@@ -18,14 +18,14 @@ yarn add github-actions-client
 
 
 ```ts
-import { GithubClient } from 'github-actions-client'
+import { GithubActionsClient } from 'github-actions-client'
 
 const github_username = 'username';
 const github_repository = 'repository';
 
 async function main(): Promise<void> {
   try {
-    const ghc = new GithubClient(github_username, github_repository);
+    const ghc = new GithubActionsClient(github_username, github_repository);
 
     ghc.CreateOrUpdateSecret('SecretName1', 'SecretValue1');
     ghc.CreateOrUpdateSecret('SecretName2', 'SecretValue2');
