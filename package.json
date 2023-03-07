@@ -1,5 +1,5 @@
 {
-  "name": "@markusrissmann/github-actions-client",
+  "name": "github-actions-client",
   "version": "1.0.4",
   "description": "Testing github api",
   "license": "MIT",

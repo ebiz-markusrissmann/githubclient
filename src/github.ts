@@ -16,10 +16,17 @@ export class GithubClient implements IGithubClient {
   github_repository: string;
   github_apiVersion: string;
 
-  constructor(github_username: string, github_repository: string, apiVersion?: string, octokitClient?: Octokit, githubWorkFlow?: IGithubWorkflow, token?: string) {
+  /**
+   * 
+   * @param github_username - the github user that performs the actions
+   * @param github_repository - the repository to perform a action
+   * @param githubToken - the github token to be used, otherwise process.env.GITHUB_TOKEN is taken
+   * @param apiVersion - the guithub api verion, e.g. 2022-11-28. This verison is used as default version   
+   */
+  constructor(github_username: string, github_repository: string, githubToken?: string, apiVersion?: string) {
     this.github_apiVersion = apiVersion ?? '2022-11-28';
-    this.octokitClient = octokitClient ?? new Octokit({ auth: token ?? process.env.GITHUB_TOKEN });
-    this.githubWorkFlow = githubWorkFlow ?? new GithubWorkflow(this.octokitClient, this.github_apiVersion);
+    this.octokitClient = new Octokit({ auth: githubToken ?? process.env.GITHUB_TOKEN });
+    this.githubWorkFlow = new GithubWorkflow(this.octokitClient, this.github_apiVersion);
     this.githubVariables = new GithubVariables(this.octokitClient, this.github_apiVersion);
     this.githubSecrets = new GithubSecrets(this.octokitClient, this.github_apiVersion);
     this.github_username = github_username;
