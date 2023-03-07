@@ -179,7 +179,7 @@ Create or update a repository secret
 **PARAMETERS**
 
 - `secretName`: string - The name of the secret
-- `secretValue`: string - The plan text value of the secret
+- `secretValue`: string - The plain text value of the secret
 
 **RETURNS**
 
@@ -896,3 +896,48 @@ Gets a redirect URL to download an archive of log files for a workflow run. This
 **RETURNS**
 
 Promise&lt;string&gt;
+
+## githubActionsClient.GetWorkflowUsage(workflow_id)
+
+Gets the number of billable minutes used by a specific workflow during the current billing cycle.
+Billable minutes only apply to workflows in private repositories that use GitHub-hosted runners.
+Usage is listed for each GitHub-hosted runner operating system in milliseconds. Any job re-runs are also included in the usage.
+
+**PARAMETERS**
+
+- `workflow_id`: number - - The ID of the workflow
+
+**RETURNS**
+
+Promise&lt;object
+- `billable`: object
+  - `UBUNTU?`: object
+    - `total_ms?`: number
+  - `MACOS?`: object
+    - `total_ms?`: number
+  - `WINDOWS?`: object
+    - `total_ms?`: number&gt;
+
+## githubActionsClient.DisableWorkflow(workflow_id)
+
+Disables a workflow and sets the state of the workflow to disabled_manually. You can replace workflow_id with the workflow file name. For example, you could use main.yaml.
+
+**PARAMETERS**
+
+- `workflow_id`: number - - The ID of the workflow
+
+**RETURNS**
+
+Promise&lt;number&gt;
+
+## githubActionsClient.EnableWorkflow(workflow_id)
+
+Enables a workflow and sets the state of the workflow to active. You can replace workflow_id with the workflow file name. For example, you could use main.yaml.
+
+**PARAMETERS**
+
+- `workflow_id`: number - - The ID of the workflow
+
+**RETURNS**
+
+Promise&lt;number&gt;
