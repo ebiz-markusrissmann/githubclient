@@ -1,5 +1,5 @@
+import { components } from '@octokit/openapi-types';
 import { Octokit } from 'octokit';
-import { components } from '@octokit/openapi-types/types';
 import { IGithubVariables } from './interfaces/i-github-variables';
 
 export class GithubVariables implements IGithubVariables {
@@ -30,7 +30,7 @@ export class GithubVariables implements IGithubVariables {
   }
 
   /**
-   * Creates a new repository variable
+   * Creates a repository variable that you can reference in a GitHub Actions workflow
    * @param {string} owner - The owner of the repository
    * @param {string} repo - The name of the repository
    * @param {string} variableName - The name of the variable to be created
@@ -52,7 +52,7 @@ export class GithubVariables implements IGithubVariables {
   }
 
   /**
-   * Returns a specific repository variable
+   * Gets a specific variable in a repository.
    * @param {string} owner - The owner of the repository
    * @param {string} repo - The name of the repository
    * @param {string} variableName - The name of the variable to be gathered
@@ -95,7 +95,7 @@ export class GithubVariables implements IGithubVariables {
   }
 
   /**
-   * Updates a specific repository variable
+   * Updates a repository variable that you can reference in a GitHub Actions workflow.
    * @param {string} owner - The owner of the repository
    * @param {string} repo - The name of the repository
    * @param {string} variableName - The name of the variable to be gathered
@@ -126,14 +126,14 @@ export class GithubVariables implements IGithubVariables {
    */
   public async CreateOrUpdateRepositoryVariable(owner: string, repo: string, variableName: string, value: string): Promise<number> {
     if (await this.RepositoryVariableExists(owner, repo, variableName)) {
-      return await this.UpdateRepositoryVariable(owner, repo, variableName, value);
+      return this.UpdateRepositoryVariable(owner, repo, variableName, value);
     } else {
-      return await this.CreateRepositoryVariable(owner, repo, variableName, value);
+      return this.CreateRepositoryVariable(owner, repo, variableName, value);
     }
   }
 
   /**
-   *  Delete a specific repository variable
+   * Deletes a repository variable using the variable name.
    * @param {string} owner - The owner of the repository
    * @param {string} repo - The name of the repository
    * @param {string} variableName - The name of the variable to be gathered

@@ -1,10 +1,10 @@
-import { Octokit } from 'octokit';
-import { GithubSecrets } from '../src/github-secrets';
-import { mock, mockReset } from 'jest-mock-extended';
-import { GithubError } from '../src/models/github-error';
-import { StatusCodes } from 'http-status-codes';
-import { OctokitResponseBuilder } from './tools-utils/octokit-response-builder';
 import { components } from '@octokit/openapi-types/types';
+import { StatusCodes } from 'http-status-codes';
+import { mock, mockReset } from 'jest-mock-extended';
+import { Octokit } from 'octokit';
+import { OctokitResponseBuilder } from './tools-utils/octokit-response-builder';
+import { GithubSecrets } from '../src/github-secrets';
+import { GithubError } from '../src/models/github-error';
 
 describe('Test github-secrets.ts', () => {
   const apiVersion = '2022-11-28';

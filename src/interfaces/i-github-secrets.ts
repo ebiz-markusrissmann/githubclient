@@ -1,4 +1,4 @@
-import { components } from '@octokit/openapi-types/types';
+import { components } from '@octokit/openapi-types';
 
 export interface IGithubSecret {
   /**

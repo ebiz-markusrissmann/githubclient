@@ -1,4 +1,4 @@
-import { components } from '@octokit/openapi-types/types';
+import { components } from '@octokit/openapi-types';
 
 export interface IGithubVariables {
   /**
@@ -10,7 +10,7 @@ export interface IGithubVariables {
   ListRepositoryVariables(owner: string, repo: string): Promise<components['schemas']['actions-variable'][]>;
 
   /**
-   * Creates a new repository variable
+   * Creates a repository variable that you can reference in a GitHub Actions workflow.
    * @param {string} owner - The owner of the repository
    * @param {string} repo - The name of the repository
    * @param {string} variableName - The name of the variable to be created
@@ -20,7 +20,7 @@ export interface IGithubVariables {
   CreateRepositoryVariable(owner: string, repo: string, variableName: string, value: string): Promise<number>;
 
   /**
-   * Returns a specific repository variable
+   * Gets a specific variable in a repository.
    * @param {string} owner - The owner of the repository
    * @param {string} repo - The name of the repository
    * @param {string} variableName - The name of the variable to be gathered
@@ -38,7 +38,7 @@ export interface IGithubVariables {
   RepositoryVariableExists(owner: string, repo: string, variableName: string): Promise<boolean>;
 
   /**
-   * Updates a specific repository variable
+   * Updates a repository variable that you can reference in a GitHub Actions workflow.
    * @param {string} owner - The owner of the repository
    * @param {string} repo - The name of the repository
    * @param {string} variableName - The name of the variable to be gathered
@@ -48,7 +48,7 @@ export interface IGithubVariables {
   UpdateRepositoryVariable(owner: string, repo: string, variableName: string, value: string): Promise<number>;
 
   /**
-   *  Delete a specific repository variable
+   * Deletes a repository variable using the variable name.
    * @param {string} owner - The owner of the repository
    * @param {string} repo - The name of the repository
    * @param {string} variableName - The name of the variable to be gathered

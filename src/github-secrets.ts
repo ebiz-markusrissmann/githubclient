@@ -1,9 +1,9 @@
-import { Octokit } from 'octokit';
-import { components } from '@octokit/openapi-types/types';
-import { base64_variants, crypto_box_seal, from_base64, from_string, ready, to_base64 } from 'libsodium-wrappers';
-import { IGithubSecret } from './interfaces/i-github-secrets';
+import { components } from '@octokit/openapi-types';
 import { StatusCodes } from 'http-status-codes/build/cjs/status-codes';
+import { base64_variants, crypto_box_seal, from_base64, from_string, ready, to_base64 } from 'libsodium-wrappers';
+import { Octokit } from 'octokit';
 import { GithubClientError } from './interfaces/i-github-error';
+import { IGithubSecret } from './interfaces/i-github-secrets';
 
 export class GithubSecrets implements IGithubSecret {
   private octokit: Octokit;
@@ -15,7 +15,7 @@ export class GithubSecrets implements IGithubSecret {
   }
 
   /**
-   * List all repository secrets
+   * Lists all secrets available in a repository without revealing their encrypted values.
    * @param {string} owner - The owner of the repository
    * @param {string} repo - The name of the repository
    * @returns A list of all secrets
@@ -45,7 +45,7 @@ export class GithubSecrets implements IGithubSecret {
   }
 
   /**
-   *  Gets a repository secret, but no value!
+   * Gets a single repository secret without revealing its encrypted value.
    * @param {string} owner - The owner of the repository
    * @param {string} repo - The name of the repository
    * @param {string} secretName - The name of the secret
@@ -75,6 +75,12 @@ export class GithubSecrets implements IGithubSecret {
     }
   }
 
+  /**
+   * Gets your public key, which you need to encrypt secrets. You need to encrypt a secret before you can create or update secrets.
+   * @param {string} owner - The owner of the repository
+   * @param {string} repo - The name of the repository
+   * @returns
+   */
   async GetPublicKey(owner: string, repo: string): Promise<components['schemas']['actions-public-key']> {
     try {
       const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/secrets/public-key', {
@@ -99,7 +105,7 @@ export class GithubSecrets implements IGithubSecret {
   }
 
   /**
-   * Create or update a repository secret
+   * Creates or updates a repository secret with an encrypted value. Encrypt your secret using LibSodium.
    * @param {string} owner - The owner of the repository
    * @param {string} repo - The name of the repository
    * @param {string} secretName - The name of the secret
@@ -146,7 +152,7 @@ export class GithubSecrets implements IGithubSecret {
   }
 
   /**
-   * Deletes a repository secret
+   * Deletes a secret in a repository using the secret name.
    * @param {string} owner - The owner of the repository
    * @param {string} repo - The name of the repository
    * @param {string} secretName - The name of the secret
