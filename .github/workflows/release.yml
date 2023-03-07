@@ -4,10 +4,8 @@ on:
     workflows: ['Snyk Security Check', 'Tests']
     branches: [main]
     types:
-      - completed
- permissions:
-    contents: write
-    
+      - completed  
+
 jobs:
   release:
     name: Release
