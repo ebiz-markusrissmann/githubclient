@@ -49,9 +49,11 @@
   "author": "markus.rissmann@eBizCon.de",
   "main": "./src/github.ts",
   "keywords": [
-    "Github",
-    "Actions",
-    "Client"
+    "GithubActions",
+    "Octokit",
+    "GithubActionsWorkflows",
+    "RepositorySecrets",
+    "RepositoryVariables"
   ],
   "files": [
     "lib/**/*", "./src/**/*"
