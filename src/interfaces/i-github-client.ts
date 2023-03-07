@@ -123,4 +123,27 @@ export interface IGithubActionsClient {
    * @returns
    */
   DownloadWorkflowRunLogs(run_id: number): Promise<string | undefined>;
+
+  /**
+   * Gets the number of billable minutes used by a specific workflow during the current billing cycle.
+   * Billable minutes only apply to workflows in private repositories that use GitHub-hosted runners.
+   * Usage is listed for each GitHub-hosted runner operating system in milliseconds. Any job re-runs are also included in the usage.
+   * @param workflow_id - The ID of the workflow
+   * @returns
+   */
+  GetWorkflowUsage(workflow_id: number): Promise<components['schemas']['workflow-usage']>;
+
+  /**
+   * Disables a workflow and sets the state of the workflow to disabled_manually. You can replace workflow_id with the workflow file name. For example, you could use main.yaml.
+   * @param workflow_id - The ID of the workflow
+   * @returns 204 indicates success
+   */
+  DisableWorkflow(workflow_id: number): Promise<number>;
+
+  /**
+   * Enables a workflow and sets the state of the workflow to active. You can replace workflow_id with the workflow file name. For example, you could use main.yaml.
+   * @param workflow_id - The ID of the workflow
+   * @returns 204 indicates success
+   */
+  EnableWorkflow(workflow_id: number): Promise<number>;
 }

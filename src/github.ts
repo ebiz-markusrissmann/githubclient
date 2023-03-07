@@ -38,7 +38,7 @@ export class GithubActionsClient implements IGithubActionsClient {
    * @returns
    */
   public async ListWorkflows(): Promise<components['schemas']['workflow'][]> {
-    return this.githubWorkFlow.ListWorkflows(this.github_username, this.github_repository);
+    return await this.githubWorkFlow.ListWorkflows(this.github_username, this.github_repository);
   }
   /**
    * Gets all infos to a specific workflow
@@ -46,7 +46,7 @@ export class GithubActionsClient implements IGithubActionsClient {
    * @returns The requested workflow, if not found undefined
    */
   public async GetWorkflow(workflowName: string): Promise<components['schemas']['workflow'] | undefined> {
-    return this.githubWorkFlow.GetWorkflow(this.github_username, this.github_repository, workflowName);
+    return await this.githubWorkFlow.GetWorkflow(this.github_username, this.github_repository, workflowName);
   }
 
   /**
@@ -63,7 +63,7 @@ export class GithubActionsClient implements IGithubActionsClient {
    * @returns All variables of the repository
    */
   public async ListRepositoryVariables(): Promise<components['schemas']['actions-variable'][]> {
-    return this.githubVariables.ListRepositoryVariables(this.github_username, this.github_repository);
+    return await this.githubVariables.ListRepositoryVariables(this.github_username, this.github_repository);
   }
 
   /**
@@ -73,7 +73,7 @@ export class GithubActionsClient implements IGithubActionsClient {
    * @returns 201, if created
    */
   public async CreateRepositoryVariable(variableName: string, value: string): Promise<number> {
-    return this.githubVariables.CreateRepositoryVariable(this.github_username, this.github_repository, variableName, value);
+    return await this.githubVariables.CreateRepositoryVariable(this.github_username, this.github_repository, variableName, value);
   }
 
   /**
@@ -82,7 +82,7 @@ export class GithubActionsClient implements IGithubActionsClient {
    * @returns The environment variable
    */
   public async GetRepositoryVariable(variableName: string): Promise<components['schemas']['actions-variable']> {
-    return this.githubVariables.GetRepositoryVariable(this.github_username, this.github_repository, variableName);
+    return await this.githubVariables.GetRepositoryVariable(this.github_username, this.github_repository, variableName);
   }
 
   /**
@@ -91,7 +91,7 @@ export class GithubActionsClient implements IGithubActionsClient {
    * @returns true, if exists, otherwise false
    */
   public async RepositoryVariableExists(variableName: string): Promise<boolean> {
-    return this.githubVariables.RepositoryVariableExists(this.github_username, this.github_repository, variableName);
+    return await this.githubVariables.RepositoryVariableExists(this.github_username, this.github_repository, variableName);
   }
 
   /**
@@ -101,7 +101,7 @@ export class GithubActionsClient implements IGithubActionsClient {
    * @returns
    */
   public async UpdateRepositoryVariable(variableName: string, value: string): Promise<number> {
-    return this.githubVariables.UpdateRepositoryVariable(this.github_username, this.github_repository, variableName, value);
+    return await this.githubVariables.UpdateRepositoryVariable(this.github_username, this.github_repository, variableName, value);
   }
 
   /**
@@ -111,7 +111,7 @@ export class GithubActionsClient implements IGithubActionsClient {
    * @returns 201 if successfull created, otherwise 204 if updated
    */
   public async CreateOrUpdateRepositoryVariable(variableName: string, value: string): Promise<number> {
-    return this.githubVariables.CreateOrUpdateRepositoryVariable(this.github_username, this.github_repository, variableName, value);
+    return await this.githubVariables.CreateOrUpdateRepositoryVariable(this.github_username, this.github_repository, variableName, value);
   }
 
   /**
@@ -120,7 +120,7 @@ export class GithubActionsClient implements IGithubActionsClient {
    * @returns 204 if deleted
    */
   public async DeleteRepositoryVariable(variableName: string): Promise<number> {
-    return this.githubVariables.DeleteRepositoryVariable(this.github_username, this.github_repository, variableName);
+    return await this.githubVariables.DeleteRepositoryVariable(this.github_username, this.github_repository, variableName);
   }
 
   /**
@@ -128,7 +128,7 @@ export class GithubActionsClient implements IGithubActionsClient {
    * @returns A list of all secrets
    */
   public async ListRepositorySecrets(): Promise<components['schemas']['actions-secret'][]> {
-    return this.githubSecrets.ListRepositorySecrets(this.github_username, this.github_repository);
+    return await this.githubSecrets.ListRepositorySecrets(this.github_username, this.github_repository);
   }
 
   /**
@@ -137,7 +137,7 @@ export class GithubActionsClient implements IGithubActionsClient {
    * @returns The secret itself without value
    */
   public async GetRepositorySecret(secretName: string): Promise<components['schemas']['actions-secret'] | undefined> {
-    return this.githubSecrets.GetRepositorySecret(this.github_username, this.github_repository, secretName);
+    return await this.githubSecrets.GetRepositorySecret(this.github_username, this.github_repository, secretName);
   }
 
   /**
@@ -147,7 +147,7 @@ export class GithubActionsClient implements IGithubActionsClient {
    * @returns 204, if successful
    */
   public async CreateOrUpdateSecret(secretName: string, secretValue: string): Promise<number> {
-    return this.githubSecrets.CreateOrUpdateSecret(this.github_username, this.github_repository, secretName, secretValue);
+    return await this.githubSecrets.CreateOrUpdateSecret(this.github_username, this.github_repository, secretName, secretValue);
   }
 
   /**
@@ -156,14 +156,14 @@ export class GithubActionsClient implements IGithubActionsClient {
    * @returns 204, if successful
    */
   public async DeleteRepositorySecret(secretName: string): Promise<number> {
-    return this.githubSecrets.DeleteRepositorySecret(this.github_username, this.github_repository, secretName);
+    return await this.githubSecrets.DeleteRepositorySecret(this.github_username, this.github_repository, secretName);
   }
 
   /**
    * Lists all workflow runs for a repository.
    */
   public async ListWorkflowRuns(): Promise<components['schemas']['workflow-run'][]> {
-    return this.githubWorkFlow.ListWorkflowRuns(this.github_username, this.github_repository);
+    return await this.githubWorkFlow.ListWorkflowRuns(this.github_username, this.github_repository);
   }
 
   /**
@@ -172,7 +172,7 @@ export class GithubActionsClient implements IGithubActionsClient {
    * @returns
    */
   public async GetWorkflowRun(run_id: number): Promise<components['schemas']['workflow-run']> {
-    return this.githubWorkFlow.GetWorkflowRun(this.github_username, this.github_repository, run_id);
+    return await this.githubWorkFlow.GetWorkflowRun(this.github_username, this.github_repository, run_id);
   }
 
   /**
@@ -181,6 +181,35 @@ export class GithubActionsClient implements IGithubActionsClient {
    * @returns
    */
   public async DownloadWorkflowRunLogs(run_id: number): Promise<string | undefined> {
-    return this.githubWorkFlow.DownloadWorkflowRunLogs(this.github_username, this.github_repository, run_id);
+    return await this.githubWorkFlow.DownloadWorkflowRunLogs(this.github_username, this.github_repository, run_id);
+  }
+
+  /**
+   * Gets the number of billable minutes used by a specific workflow during the current billing cycle.
+   * Billable minutes only apply to workflows in private repositories that use GitHub-hosted runners.
+   * Usage is listed for each GitHub-hosted runner operating system in milliseconds. Any job re-runs are also included in the usage.
+   * @param workflow_id - The ID of the workflow
+   * @returns
+   */
+  public async GetWorkflowUsage(workflow_id: number): Promise<components['schemas']['workflow-usage']> {
+    return await this.githubWorkFlow.GetWorkflowUsage(this.github_username, this.github_repository, workflow_id);
+  }
+
+  /**
+   * Disables a workflow and sets the state of the workflow to disabled_manually. You can replace workflow_id with the workflow file name. For example, you could use main.yaml.
+   * @param workflow_id - The ID of the workflow
+   * @returns 204 indicates success
+   */
+  public async DisableWorkflow(workflow_id: number): Promise<number> {
+    return await this.githubWorkFlow.DisableWorkflow(this.github_username, this.github_repository, workflow_id);
+  }
+
+  /**
+   * Enables a workflow and sets the state of the workflow to active. You can replace workflow_id with the workflow file name. For example, you could use main.yaml.
+   * @param workflow_id - The ID of the workflow
+   * @returns 204 indicates success
+   */
+  public async EnableWorkflow(workflow_id: number): Promise<number> {
+    return await this.githubWorkFlow.EnableWorkflow(this.github_username, this.github_repository, workflow_id);
   }
 }
