@@ -14,7 +14,12 @@ const config: Config.InitialOptions = {
   moduleNameMapper: {
     '^jose/(.*)$': '<rootDir>/node_modules/jose/dist/node/cjs/$1',
   },
-  transformIgnorePatterns: []
+  transformIgnorePatterns: [],
+  "coverageReporters": [
+    "json-summary", 
+    "text",
+    "lcov"
+  ]
 
 };
 export default config;
