@@ -8,6 +8,7 @@ import { OctokitResponseBuilder, ListWorkflowResponse, ListWorkflowRunsResponse 
 import { GithubWorkflow } from '../src/github-workflow';
 import { GithubError } from '../src/models/github-error';
 import { ResponseHeaders } from '@octokit/types';
+import { ErrorHandler } from '../src/tools-utils/error-handler';
 
 describe('Test github-workflow.ts', () => {
   const apiVersion = '2022-11-28';
@@ -19,6 +20,8 @@ describe('Test github-workflow.ts', () => {
     transports: [new winston.transports.File({ filename: 'error.log', level: 'error' }), new winston.transports.File({ filename: 'github-client.log', level: 'info' }), new winston.transports.Console({})],
     defaultMeta: { dateTime: Date().toLocaleUpperCase() },
   });
+
+  const errorHandler: ErrorHandler = new ErrorHandler(logger);
 
   beforeEach(() => {
     mockReset(octokitMock);
@@ -60,7 +63,7 @@ describe('Test github-workflow.ts', () => {
 
     octokitMock.request.mockImplementation(() => Promise.resolve(response));
 
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     const workflows = await githubWorkflow.ListWorkflows('me', 'repo');
 
     expect(workflows.length).toBe(2);
@@ -89,7 +92,7 @@ describe('Test github-workflow.ts', () => {
       },
     };
     octokitMock.request.mockImplementation(() => Promise.reject(error));
-    const githubWorkflow = new GithubWorkflow(octokitMock, '2022-11-28', logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, '2022-11-28', logger, errorHandler);
     await expect(githubWorkflow.ListWorkflows('me', 'repo')).rejects.toEqual({
       message: 'HttpStatusCode: 404 The request to https://api.github.com/repos/me/repo/actions/workflows failed! See https://docs.github.com/rest/reference/actions#list-repository-workflows',
       name: 'GithubClientError',
@@ -122,7 +125,7 @@ describe('Test github-workflow.ts', () => {
       },
     };
     octokitMock.request.mockImplementation(() => Promise.reject(error));
-    const githubWorkflow = new GithubWorkflow(octokitMock, '2022-11-28', logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, '2022-11-28', logger, errorHandler);
     await expect(githubWorkflow.ListWorkflows('me', 'repo')).rejects.toEqual({
       message: 'HttpStatusCode: 401 The request to https://api.github.com/repos/me/repo/actions/workflows failed! See https://docs.github.com/rest',
       name: 'GithubClientError',
@@ -147,7 +150,7 @@ describe('Test github-workflow.ts', () => {
 
     octokitMock.request.mockImplementation(() => Promise.resolve(response));
 
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     const workflow = await githubWorkflow.GetWorkflow('me', 'repo', 2001);
 
     expect(workflow).toEqual(wf1);
@@ -180,7 +183,7 @@ describe('Test github-workflow.ts', () => {
     };
     octokitMock.request.mockImplementation(() => Promise.reject(error));
 
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.GetWorkflow('me', 'repo', 2001)).rejects.toEqual({
       message: 'HttpStatusCode: 404 The request to https://api.github.com/repos/me/repo/actions/workflows/2001 failed! See https://docs.github.com/rest/reference/actions#get-a-workflow',
       name: 'GithubClientError',
@@ -225,7 +228,7 @@ describe('Test github-workflow.ts', () => {
     octokitMock.request.mockImplementationOnce(() => Promise.resolve(response1));
     octokitMock.request.mockImplementationOnce(() => Promise.resolve(response2));
 
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     const result = await githubWorkflow.TriggerWorkflow('me', 'repo', 'release', 'branch');
     expect(result).toBe(204);
   });
@@ -292,7 +295,7 @@ describe('Test github-workflow.ts', () => {
     octokitMock.request.mockImplementationOnce(() => Promise.resolve(response1));
     octokitMock.request.mockImplementationOnce(() => Promise.reject(error));
 
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.TriggerWorkflow('me', 'repo', 'release', 'branch')).rejects.toEqual({
       message: 'HttpStatusCode: 404 The request to https://api.github.com/repos/owner/repo/actions/workflows/2000/dispatches failed! See https://docs.github.com/rest/reference/actions#create-a-workflow-dispatch-event',
       name: 'GithubClientError',
@@ -361,7 +364,7 @@ describe('Test github-workflow.ts', () => {
     octokitMock.request.mockImplementationOnce(() => Promise.resolve(response1));
     octokitMock.request.mockImplementationOnce(() => Promise.reject(error));
 
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.TriggerWorkflow('me', 'repo', 'release', 'branch')).rejects.toEqual({
       message: 'HttpStatusCode: 401 The request to https://api.github.com/repos/owner/repo/actions/workflows/2000/dispatches failed! See https://docs.github.com/rest',
       name: 'GithubClientError',
@@ -872,7 +875,7 @@ describe('Test github-workflow.ts', () => {
 
     const response = OctokitResponseBuilder.getResponse(StatusCodes.OK, '', data);
     octokitMock.request.mockImplementation(() => Promise.resolve(response));
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     expect((await githubWorkflow.ListWorkflowRuns('me', 'repo')).length).toBe(2);
   });
 
@@ -902,7 +905,7 @@ describe('Test github-workflow.ts', () => {
       },
     };
     octokitMock.request.mockImplementation(() => Promise.reject(error));
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.ListWorkflowRuns('me', 'repo')).rejects.toEqual({
       message: 'HttpStatusCode: 404 The request to https://api.github.com/repos/me/repo/actions/runs failed! See https://docs.github.com/rest/reference/actions#list-workflow-runs-for-a-repository',
       name: 'GithubClientError',
@@ -935,7 +938,7 @@ describe('Test github-workflow.ts', () => {
       },
     };
     octokitMock.request.mockImplementation(() => Promise.reject(error));
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.ListWorkflowRuns('me', 'repo')).rejects.toEqual({
       message: 'HttpStatusCode: 401 The request to https://api.github.com/repos/me/repo/actions/runs failed! See https://docs.github.com/rest',
       name: 'GithubClientError',
@@ -1195,7 +1198,7 @@ describe('Test github-workflow.ts', () => {
     const response = OctokitResponseBuilder.getResponse(StatusCodes.OK, '', wfr);
     octokitMock.request.mockImplementation(() => Promise.resolve(response));
 
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.GetWorkflowRun('me', 'repo', 205)).resolves.toEqual(wfr);
   });
 
@@ -1226,7 +1229,7 @@ describe('Test github-workflow.ts', () => {
     };
     octokitMock.request.mockImplementation(() => Promise.reject(error));
 
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.GetWorkflowRun('me', 'repo', 205)).rejects.toEqual({
       message: 'HttpStatusCode: 404 The request to https://api.github.com/repos/me/repo/actions/runs/205 failed! See https://docs.github.com/rest/reference/actions#get-a-workflow-run',
       name: 'GithubClientError',
@@ -1260,7 +1263,7 @@ describe('Test github-workflow.ts', () => {
     };
     octokitMock.request.mockImplementation(() => Promise.reject(error));
 
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.GetWorkflowRun('me', 'repo', 205)).rejects.toEqual({
       message: 'HttpStatusCode: 401 The request to https://api.github.com/repos/me/repo/actions/runs/205 failed! See https://docs.github.com/rest',
       name: 'GithubClientError',
@@ -1275,7 +1278,7 @@ describe('Test github-workflow.ts', () => {
     const response = OctokitResponseBuilder.getResponse(StatusCodes.MOVED_TEMPORARILY, '', undefined, responseHeaders);
     octokitMock.request.mockImplementation(() => Promise.resolve(response));
 
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.DownloadWorkflowRunLogs('me', 'repo', 201)).resolves.toBe(responseHeaders.location);
   });
 
@@ -1306,7 +1309,7 @@ describe('Test github-workflow.ts', () => {
     };
     octokitMock.request.mockImplementation(() => Promise.reject(error));
 
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.DownloadWorkflowRunLogs('me', 'repo', 201)).rejects.toEqual({
       message: 'HttpStatusCode: 404 The request to https://api.github.com/repos/me/repo/actions/runs/201/logs failed! See https://docs.github.com/rest/reference/actions#download-workflow-run-logs',
       name: 'GithubClientError',
@@ -1340,7 +1343,7 @@ describe('Test github-workflow.ts', () => {
     };
     octokitMock.request.mockImplementation(() => Promise.reject(error));
 
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.DownloadWorkflowRunLogs('me', 'repo', 201)).rejects.toEqual({
       message: 'HttpStatusCode: 401 The request to https://api.github.com/repos/me/repo/actions/runs/201/logs failed! See https://docs.github.com/rest',
       name: 'GithubClientError',
@@ -1357,7 +1360,7 @@ describe('Test github-workflow.ts', () => {
     };
     const response = OctokitResponseBuilder.getResponse(StatusCodes.MOVED_TEMPORARILY, '', wfu);
     octokitMock.request.mockImplementation(() => Promise.resolve(response));
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.GetWorkflowUsage('me', 'repo', 2000)).resolves.toEqual(wfu);
   });
 
@@ -1387,7 +1390,7 @@ describe('Test github-workflow.ts', () => {
       },
     };
     octokitMock.request.mockImplementation(() => Promise.reject(error));
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.GetWorkflowUsage('me', 'repo', 2000)).rejects.toEqual({
       message: 'HttpStatusCode: 404 The request to https://api.github.com/repos/me/repo/actions/workflows/2000/timing failed! See https://docs.github.com/rest/reference/actions#get-workflow-usage',
       name: 'GithubClientError',
@@ -1420,7 +1423,7 @@ describe('Test github-workflow.ts', () => {
       },
     };
     octokitMock.request.mockImplementation(() => Promise.reject(error));
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.GetWorkflowUsage('me', 'repo', 2000)).rejects.toEqual({
       message: 'HttpStatusCode: 401 The request to https://api.github.com/repos/me/repo/actions/workflows/2000/timing failed! See https://docs.github.com/rest',
       name: 'GithubClientError',
@@ -1430,7 +1433,7 @@ describe('Test github-workflow.ts', () => {
   it('Test DisableWorkflow', async () => {
     const response = OctokitResponseBuilder.getResponse(StatusCodes.NO_CONTENT, '', undefined);
     octokitMock.request.mockImplementation(() => Promise.resolve(response));
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.DisableWorkflow('me', 'repo', 2000)).resolves.toBe(StatusCodes.NO_CONTENT);
   });
 
@@ -1460,7 +1463,7 @@ describe('Test github-workflow.ts', () => {
       },
     };
     octokitMock.request.mockImplementation(() => Promise.reject(error));
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.DisableWorkflow('me', 'repo', 2000)).rejects.toEqual({
       message: 'HttpStatusCode: 404 The request to https://api.github.com/repos/me/repo/actions/workflows/2000/disable failed! See https://docs.github.com/rest/reference/actions#disable-a-workflow',
       name: 'GithubClientError',
@@ -1493,7 +1496,7 @@ describe('Test github-workflow.ts', () => {
       },
     };
     octokitMock.request.mockImplementation(() => Promise.reject(error));
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.DisableWorkflow('me', 'repo', 2000)).rejects.toEqual({
       message: 'HttpStatusCode: 401 The request to https://api.github.com/repos/me/repo/actions/workflows/2000/disable failed! See https://docs.github.com/rest',
       name: 'GithubClientError',
@@ -1503,7 +1506,7 @@ describe('Test github-workflow.ts', () => {
   it('Test EnableWorkflow', async () => {
     const response = OctokitResponseBuilder.getResponse(StatusCodes.NO_CONTENT, '', undefined);
     octokitMock.request.mockImplementation(() => Promise.resolve(response));
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.EnableWorkflow('me', 'repo', 2000)).resolves.toBe(StatusCodes.NO_CONTENT);
   });
 
@@ -1533,7 +1536,7 @@ describe('Test github-workflow.ts', () => {
       },
     };
     octokitMock.request.mockImplementation(() => Promise.reject(error));
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.EnableWorkflow('me', 'repo', 2000)).rejects.toEqual({
       message: 'HttpStatusCode: 404 The request to https://api.github.com/repos/me/repo/actions/workflows/2000/enable failed! See https://docs.github.com/rest/reference/actions#enable-a-workflow',
       name: 'GithubClientError',
@@ -1566,7 +1569,7 @@ describe('Test github-workflow.ts', () => {
       },
     };
     octokitMock.request.mockImplementation(() => Promise.reject(error));
-    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger);
+    const githubWorkflow = new GithubWorkflow(octokitMock, apiVersion, logger, errorHandler);
     await expect(githubWorkflow.EnableWorkflow('me', 'repo', 2000)).rejects.toEqual({
       message: 'HttpStatusCode: 401 The request to https://api.github.com/repos/me/repo/actions/workflows/2000/enable failed! See https://docs.github.com/rest',
       name: 'GithubClientError',

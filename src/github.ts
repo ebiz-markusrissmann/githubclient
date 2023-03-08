@@ -8,6 +8,7 @@ import { GithubWorkflow } from './github-workflow';
 import { IGithubActionsClient } from './interfaces/i-github-client';
 import { IGithubVariables } from './interfaces/i-github-variables';
 import { IGithubWorkflow } from './interfaces/i-github-workflows';
+import { ErrorHandler } from './tools-utils/error-handler';
 
 export class GithubActionsClient implements IGithubActionsClient {
   public octokitClient: Octokit;
@@ -18,6 +19,7 @@ export class GithubActionsClient implements IGithubActionsClient {
   github_repository: string;
   github_apiVersion: string;
   logger: Logger;
+  errorHandler: ErrorHandler;
 
   /**
    *
@@ -33,11 +35,12 @@ export class GithubActionsClient implements IGithubActionsClient {
       transports: [new winston.transports.File({ filename: 'error.log', level: 'error' }), new winston.transports.File({ filename: 'github-client.log', level: 'info' }), new winston.transports.Console({})],
     });
 
+    this.errorHandler = new ErrorHandler(this.logger);
     this.github_apiVersion = apiVersion ?? '2022-11-28';
     this.octokitClient = new Octokit({ auth: githubToken ?? process.env.GITHUB_TOKEN });
-    this.githubWorkFlow = new GithubWorkflow(this.octokitClient, this.github_apiVersion, this.logger);
+    this.githubWorkFlow = new GithubWorkflow(this.octokitClient, this.github_apiVersion, this.logger, this.errorHandler);
     this.githubVariables = new GithubVariables(this.octokitClient, this.github_apiVersion);
-    this.githubSecrets = new GithubSecrets(this.octokitClient, this.github_apiVersion);
+    this.githubSecrets = new GithubSecrets(this.octokitClient, this.github_apiVersion, this.logger, this.errorHandler);
     this.github_username = github_username;
     this.github_repository = github_repository;
   }

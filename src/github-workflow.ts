@@ -2,17 +2,19 @@ import { components } from '@octokit/openapi-types';
 import { Workflow } from '@octokit/webhooks-types';
 import { Octokit } from 'octokit';
 import { Logger } from 'winston';
-import { GithubClientError } from './interfaces/i-github-error';
+import { ErrorHandler } from './tools-utils/error-handler';
 
 export class GithubWorkflow {
   private octokit: Octokit;
   private apiVersion: string;
   private logger: Logger;
+  private errorHandler: ErrorHandler;
 
-  constructor(octokit: Octokit, apiVersion: string, logger: Logger) {
+  constructor(octokit: Octokit, apiVersion: string, logger: Logger, errorHandler: ErrorHandler) {
     this.octokit = octokit;
     this.apiVersion = apiVersion;
     this.logger = logger;
+    this.errorHandler = errorHandler;
   }
 
   /**
@@ -22,6 +24,7 @@ export class GithubWorkflow {
    * @returns {workflow[]}
    */
   public async ListWorkflows(owner: string, repo: string): Promise<Workflow[]> {
+    this.logger.debug('Called ListWorkflows');
     try {
       const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/workflows', {
         owner: owner,
@@ -33,12 +36,7 @@ export class GithubWorkflow {
 
       return response.data.workflows;
     } catch (err: any) {
-      this.logger.error(JSON.stringify(err));
-      const error: GithubClientError = {
-        message: `HttpStatusCode: ${err.status} The request to ${err.response.url} failed! See ${err.response.data.documentation_url}`,
-        name: 'GithubClientError',
-      };
-      throw error;
+      this.errorHandler.handleError(err);
     }
   }
   /**
@@ -61,12 +59,7 @@ export class GithubWorkflow {
 
       return response.data;
     } catch (err: any) {
-      this.logger.error(JSON.stringify(err));
-      const error: GithubClientError = {
-        message: `HttpStatusCode: ${err.status} The request to ${err.response.url} failed! See ${err.response.data.documentation_url}`,
-        name: 'GithubClientError',
-      };
-      throw error;
+      this.errorHandler.handleError(err);
     }
   }
 
@@ -98,12 +91,7 @@ export class GithubWorkflow {
         return response.status;
       }
     } catch (err: any) {
-      this.logger.error(JSON.stringify(err));
-      const error: GithubClientError = {
-        message: `HttpStatusCode: ${err.status} The request to ${err.response.url} failed! See ${err.response.data.documentation_url}`,
-        name: 'GithubClientError',
-      };
-      throw error;
+      this.errorHandler.handleError(err);
     }
     /* istanbul ignore next */
     return undefined;
@@ -127,12 +115,7 @@ export class GithubWorkflow {
 
       return response.data.workflow_runs;
     } catch (err: any) {
-      this.logger.error(JSON.stringify(err));
-      const error: GithubClientError = {
-        message: `HttpStatusCode: ${err.status} The request to ${err.response.url} failed! See ${err.response.data.documentation_url}`,
-        name: 'GithubClientError',
-      };
-      throw error;
+      this.errorHandler.handleError(err);
     }
   }
 
@@ -155,12 +138,7 @@ export class GithubWorkflow {
       });
       return response.data;
     } catch (err: any) {
-      this.logger.error(JSON.stringify(err));
-      const error: GithubClientError = {
-        message: `HttpStatusCode: ${err.status} The request to ${err.response.url} failed! See ${err.response.data.documentation_url}`,
-        name: 'GithubClientError',
-      };
-      throw error;
+      this.errorHandler.handleError(err);
     }
   }
 
@@ -186,12 +164,7 @@ export class GithubWorkflow {
         return response.headers.location;
       }
     } catch (err: any) {
-      this.logger.error(JSON.stringify(err));
-      const error: GithubClientError = {
-        message: `HttpStatusCode: ${err.status} The request to ${err.response.url} failed! See ${err.response.data.documentation_url}`,
-        name: 'GithubClientError',
-      };
-      throw error;
+      this.errorHandler.handleError(err);
     }
 
     /* istanbul ignore next */
@@ -218,12 +191,7 @@ export class GithubWorkflow {
 
       return response.data;
     } catch (err: any) {
-      this.logger.error(JSON.stringify(err));
-      const error: GithubClientError = {
-        message: `HttpStatusCode: ${err.status} The request to ${err.response.url} failed! See ${err.response.data.documentation_url}`,
-        name: 'GithubClientError',
-      };
-      throw error;
+      this.errorHandler.handleError(err);
     }
   }
 
@@ -246,12 +214,7 @@ export class GithubWorkflow {
       });
       return response.status;
     } catch (err: any) {
-      this.logger.error(JSON.stringify(err));
-      const error: GithubClientError = {
-        message: `HttpStatusCode: ${err.status} The request to ${err.response.url} failed! See ${err.response.data.documentation_url}`,
-        name: 'GithubClientError',
-      };
-      throw error;
+      this.errorHandler.handleError(err);
     }
   }
 
@@ -274,12 +237,7 @@ export class GithubWorkflow {
       });
       return response.status;
     } catch (err: any) {
-      this.logger.error(JSON.stringify(err));
-      const error: GithubClientError = {
-        message: `HttpStatusCode: ${err.status} The request to ${err.response.url} failed! See ${err.response.data.documentation_url}`,
-        name: 'GithubClientError',
-      };
-      throw error;
+      this.errorHandler.handleError(err);
     }
   }
 }

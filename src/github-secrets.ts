@@ -1,17 +1,21 @@
 import { components } from '@octokit/openapi-types';
-import { StatusCodes } from 'http-status-codes/build/cjs/status-codes';
 import { base64_variants, crypto_box_seal, from_base64, from_string, ready, to_base64 } from 'libsodium-wrappers';
 import { Octokit } from 'octokit';
-import { GithubClientError } from './interfaces/i-github-error';
+import { Logger } from 'winston';
 import { IGithubSecret } from './interfaces/i-github-secrets';
+import { ErrorHandler } from './tools-utils/error-handler';
 
 export class GithubSecrets implements IGithubSecret {
   private octokit: Octokit;
   private apiVersion: string;
+  private logger: Logger;
+  private errorHandler: ErrorHandler;
 
-  constructor(octokit: Octokit, apiVersion: string) {
+  constructor(octokit: Octokit, apiVersion: string, logger: Logger, errorHandler: ErrorHandler) {
     this.octokit = octokit;
     this.apiVersion = apiVersion;
+    this.logger = logger;
+    this.errorHandler = errorHandler;
   }
 
   /**
@@ -21,6 +25,7 @@ export class GithubSecrets implements IGithubSecret {
    * @returns A list of all secrets
    */
   public async ListRepositorySecrets(owner: string, repo: string): Promise<components['schemas']['actions-secret'][]> {
+    this.logger.debug('Execute ListRepositorySecrets');
     try {
       const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/secrets', {
         owner: owner,
@@ -32,16 +37,7 @@ export class GithubSecrets implements IGithubSecret {
 
       return response.data.secrets;
     } catch (err: any) {
-      if (err.status === StatusCodes.NOT_FOUND) {
-        const error: GithubClientError = {
-          name: 'GithubClientError',
-          message: `Owner '${owner}', repository '${repo}' is unknown!`,
-        };
-        throw error;
-      } else {
-        /* istanbul ignore next */
-        throw err;
-      }
+      this.errorHandler.handleError(err);
     }
   }
 
@@ -64,16 +60,7 @@ export class GithubSecrets implements IGithubSecret {
       });
       return response.data;
     } catch (err: any) {
-      if (err.status === StatusCodes.NOT_FOUND) {
-        const error: GithubClientError = {
-          name: 'GithubClientError',
-          message: `Owner '${owner}', repository '${repo}' or secret name '${secretName}' is unknown!`,
-        };
-        throw error;
-      } else {
-        /* istanbul ignore next */
-        throw err;
-      }
+      this.errorHandler.handleError(err);
     }
   }
 
@@ -95,15 +82,7 @@ export class GithubSecrets implements IGithubSecret {
 
       return response.data;
     } catch (err: any) {
-      if (err.request.url === `https://api.github.com/repos/${owner}/${repo}/actions/secrets/public-key`) {
-        const error: GithubClientError = {
-          name: 'GithubClientError',
-          message: `Cannot retrieve public-key for repo '${repo}' with owner '${owner}'`,
-        };
-        throw error;
-      }
-      /* istanbul ignore next */
-      throw err;
+      this.errorHandler.handleError(err);
     }
   }
 
@@ -147,11 +126,7 @@ export class GithubSecrets implements IGithubSecret {
       /* istanbul ignore next */
       return postResponse.status;
     } catch (err: any) {
-      const error: GithubClientError = {
-        name: 'GithubClientError',
-        message: `Cannot update secret for repo '${repo}' with owner '${owner}'`,
-      };
-      throw error;
+      this.errorHandler.handleError(err);
     }
   }
 
@@ -174,15 +149,7 @@ export class GithubSecrets implements IGithubSecret {
       });
       return result.status;
     } catch (err: any) {
-      if (err.status === StatusCodes.NOT_FOUND) {
-        const error: GithubClientError = {
-          name: 'GithubClientError',
-          message: `Owner '${owner}', repository '${repo}' or secret name '${secretName}' is unknown!`,
-        };
-        throw error;
-      } else {
-        throw err;
-      }
+      this.errorHandler.handleError(err);
     }
   }
 }
