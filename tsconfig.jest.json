@@ -20,7 +20,7 @@
     "strictPropertyInitialization": true,
     "stripInternal": true,
     "target": "ES2018",
-    "esModuleInterop": true,    
+    "esModuleInterop": true 
   },
   "include": ["src/**/*.ts", "test/**/*.ts"],
   "exclude": ["node_modules", "test/**/app.test.ts"]
