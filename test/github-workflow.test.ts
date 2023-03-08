@@ -1,5 +1,6 @@
-import { Workflow } from '@octokit/webhooks-types';
 import { components } from '@octokit/openapi-types';
+import { ResponseHeaders } from '@octokit/types';
+import { Workflow } from '@octokit/webhooks-types';
 import { StatusCodes } from 'http-status-codes';
 import { mock, mockReset } from 'jest-mock-extended';
 import { Octokit } from 'octokit';
@@ -7,7 +8,6 @@ import winston, { createLogger, Logger } from 'winston';
 import { OctokitResponseBuilder, ListWorkflowResponse, ListWorkflowRunsResponse } from './tools-utils/octokit-response-builder';
 import { GithubWorkflow } from '../src/github-workflow';
 import { GithubError } from '../src/models/github-error';
-import { ResponseHeaders } from '@octokit/types';
 import { ErrorHandler } from '../src/tools-utils/error-handler';
 
 describe('Test github-workflow.ts', () => {

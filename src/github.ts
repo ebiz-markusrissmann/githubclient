@@ -39,7 +39,7 @@ export class GithubActionsClient implements IGithubActionsClient {
     this.github_apiVersion = apiVersion ?? '2022-11-28';
     this.octokitClient = new Octokit({ auth: githubToken ?? process.env.GITHUB_TOKEN });
     this.githubWorkFlow = new GithubWorkflow(this.octokitClient, this.github_apiVersion, this.logger, this.errorHandler);
-    this.githubVariables = new GithubVariables(this.octokitClient, this.github_apiVersion);
+    this.githubVariables = new GithubVariables(this.octokitClient, this.github_apiVersion, this.logger, this.errorHandler);
     this.githubSecrets = new GithubSecrets(this.octokitClient, this.github_apiVersion, this.logger, this.errorHandler);
     this.github_username = github_username;
     this.github_repository = github_repository;

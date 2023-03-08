@@ -2,10 +2,10 @@ import { components } from '@octokit/openapi-types/types';
 import { StatusCodes } from 'http-status-codes';
 import { mock, mockReset } from 'jest-mock-extended';
 import { Octokit } from 'octokit';
+import winston, { createLogger, Logger } from 'winston';
 import { OctokitResponseBuilder } from './tools-utils/octokit-response-builder';
 import { GithubSecrets } from '../src/github-secrets';
 import { GithubError } from '../src/models/github-error';
-import winston, { createLogger, Logger } from 'winston';
 import { ErrorHandler } from '../src/tools-utils/error-handler';
 
 const logger: Logger = createLogger({
@@ -192,6 +192,37 @@ describe('Test github-secrets.ts', () => {
 
     const ghs = new GithubSecrets(octokitMock, apiVersion, logger, errorHandler);
     await expect(ghs.CreateOrUpdateSecret(owner, repo, 'secretName', 'secretValue')).rejects.toEqual({ message: "Cannot update secret for repo 'mwaa-pitch' with owner 'ebiz-markusrissmann'" });
+  });
+
+  
+  it('Test GetPublicKey', async () => {
+    const data: components['schemas']['actions-public-key'] = {
+      key_id: '123123',
+      key: '123123123123123123',
+    };
+    const response2 = OctokitResponseBuilder.getResponse(StatusCodes.OK, '', data);
+
+    octokitMock.request.mockImplementation(() => Promise.resolve(response2));
+
+    const githubSecrets = new GithubSecrets(octokitMock, apiVersion, logger, errorHandler);
+    const updateVariableResponse = await githubSecrets.GetPublicKey('me', 'my-repo');
+
+    expect(updateVariableResponse).toEqual(data);
+
+    expect(octokitMock.request).toHaveBeenCalledWith('GET /repos/{owner}/{repo}/actions/secrets/public-key', { headers: { 'X-GitHub-Api-Version': '2022-11-28' },  owner: 'me', repo: 'my-repo' });
+  });
+
+  it('Test DeleteRepositoryVariable', async () => {
+    const response2 = OctokitResponseBuilder.getResponse(StatusCodes.NO_CONTENT, '', undefined);
+
+    octokitMock.request.mockImplementation(() => Promise.resolve(response2));
+
+    const githubSecrets = new GithubSecrets(octokitMock, apiVersion, logger, errorHandler);
+    const updateVariableResponse = await githubSecrets.DeleteRepositorySecret('me', 'my-repo', 'dodo');
+
+    expect(updateVariableResponse).toBe(StatusCodes.NO_CONTENT);
+
+    expect(octokitMock.request).toHaveBeenCalledWith('DELETE /repos/{owner}/{repo}/actions/secrets/{secret_name}', { headers: { 'X-GitHub-Api-Version': '2022-11-28' }, secret_name: 'dodo', owner: 'me', repo: 'my-repo' });
   });
 
   it('Test DeleteRepositorySecret -> 404', async () => {

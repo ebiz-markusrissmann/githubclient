@@ -1,14 +1,20 @@
 import { components } from '@octokit/openapi-types';
 import { Octokit } from 'octokit';
+import { Logger } from 'winston';
 import { IGithubVariables } from './interfaces/i-github-variables';
+import { ErrorHandler } from './tools-utils/error-handler';
 
 export class GithubVariables implements IGithubVariables {
   private octokit: Octokit;
   private apiVersion: string;
+  private logger: Logger;
+  private errorHandler: ErrorHandler;
 
-  constructor(octokit: Octokit, apiVersion: string) {
+  constructor(octokit: Octokit, apiVersion: string, logger: Logger, errorhandler: ErrorHandler) {
     this.octokit = octokit;
     this.apiVersion = apiVersion;
+    this.logger = logger;
+    this.errorHandler = errorhandler;
   }
 
   /**
@@ -18,15 +24,21 @@ export class GithubVariables implements IGithubVariables {
    * @returns All variables of the repository
    */
   public async ListRepositoryVariables(owner: string, repo: string): Promise<components['schemas']['actions-variable'][]> {
-    const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/variables', {
-      owner: owner,
-      repo: repo,
-      headers: {
-        'X-GitHub-Api-Version': this.apiVersion,
-      },
-    });
+    this.logger.debug('Execute ListRepositoryVariables');
 
-    return response.data.variables;
+    try {
+      const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/variables', {
+        owner: owner,
+        repo: repo,
+        headers: {
+          'X-GitHub-Api-Version': this.apiVersion,
+        },
+      });
+
+      return response.data.variables;
+    } catch (err: any) {
+      this.errorHandler.handleError(err);
+    }
   }
 
   /**
@@ -38,17 +50,21 @@ export class GithubVariables implements IGithubVariables {
    * @returns 201, if created
    */
   public async CreateRepositoryVariable(owner: string, repo: string, variableName: string, value: string): Promise<number> {
-    const response = await this.octokit.request('POST /repos/{owner}/{repo}/actions/variables', {
-      owner: owner,
-      repo: repo,
-      name: variableName,
-      value: value,
-      headers: {
-        'X-GitHub-Api-Version': this.apiVersion,
-      },
-    });
+    try {
+      const response = await this.octokit.request('POST /repos/{owner}/{repo}/actions/variables', {
+        owner: owner,
+        repo: repo,
+        name: variableName,
+        value: value,
+        headers: {
+          'X-GitHub-Api-Version': this.apiVersion,
+        },
+      });
 
-    return response.status;
+      return response.status;
+    } catch (err: any) {
+      this.errorHandler.handleError(err);
+    }
   }
 
   /**
@@ -59,15 +75,19 @@ export class GithubVariables implements IGithubVariables {
    * @returns The environment variable
    */
   public async GetRepositoryVariable(owner: string, repo: string, variableName: string): Promise<components['schemas']['actions-variable']> {
-    const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/variables/{name}', {
-      owner: owner,
-      repo: repo,
-      name: variableName,
-      headers: {
-        'X-GitHub-Api-Version': this.apiVersion,
-      },
-    });
-    return response.data;
+    try {
+      const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/variables/{name}', {
+        owner: owner,
+        repo: repo,
+        name: variableName,
+        headers: {
+          'X-GitHub-Api-Version': this.apiVersion,
+        },
+      });
+      return response.data;
+    } catch (err: any) {
+      this.errorHandler.handleError(err);
+    }
   }
 
   /**
@@ -77,6 +97,7 @@ export class GithubVariables implements IGithubVariables {
    * @param {string} variableName - The name of the variable to be gathered
    * @returns true, if exists, otherwise false
    */
+  /* istanbul ignore next */
   public async RepositoryVariableExists(owner: string, repo: string, variableName: string): Promise<boolean> {
     try {
       await this.octokit.request('GET /repos/{owner}/{repo}/actions/variables/{name}', {
@@ -103,17 +124,20 @@ export class GithubVariables implements IGithubVariables {
    * @returns
    */
   public async UpdateRepositoryVariable(owner: string, repo: string, variableName: string, value: string): Promise<number> {
-    const response = await this.octokit.request('PATCH /repos/{owner}/{repo}/actions/variables/{name}', {
-      owner: owner,
-      repo: repo,
-      name: variableName,
-      value: value,
-      headers: {
-        'X-GitHub-Api-Version': this.apiVersion,
-      },
-    });
-
-    return response.status;
+    try {
+      const response = await this.octokit.request('PATCH /repos/{owner}/{repo}/actions/variables/{name}', {
+        owner: owner,
+        repo: repo,
+        name: variableName,
+        value: value,
+        headers: {
+          'X-GitHub-Api-Version': this.apiVersion,
+        },
+      });
+      return response.status;
+    } catch (err: any) {
+      this.errorHandler.handleError(err);
+    }
   }
 
   /**
@@ -124,11 +148,16 @@ export class GithubVariables implements IGithubVariables {
    * @param {string} value - The value of the repository variable
    * @returns
    */
+  /* istanbul ignore next */
   public async CreateOrUpdateRepositoryVariable(owner: string, repo: string, variableName: string, value: string): Promise<number> {
-    if (await this.RepositoryVariableExists(owner, repo, variableName)) {
-      return this.UpdateRepositoryVariable(owner, repo, variableName, value);
-    } else {
-      return this.CreateRepositoryVariable(owner, repo, variableName, value);
+    try {
+      if (await this.RepositoryVariableExists(owner, repo, variableName)) {
+        return await this.UpdateRepositoryVariable(owner, repo, variableName, value);
+      } else {
+        return await this.CreateRepositoryVariable(owner, repo, variableName, value);
+      }
+    } catch (err: any) {
+      this.errorHandler.handleError(err);
     }
   }
 
@@ -140,15 +169,19 @@ export class GithubVariables implements IGithubVariables {
    * @returns 204 if deleted
    */
   public async DeleteRepositoryVariable(owner: string, repo: string, variableName: string): Promise<number> {
-    const response = await this.octokit.request('DELETE /repos/{owner}/{repo}/actions/variables/{name}', {
-      owner: owner,
-      repo: repo,
-      name: variableName,
-      headers: {
-        'X-GitHub-Api-Version': this.apiVersion,
-      },
-    });
+    try {
+      const response = await this.octokit.request('DELETE /repos/{owner}/{repo}/actions/variables/{name}', {
+        owner: owner,
+        repo: repo,
+        name: variableName,
+        headers: {
+          'X-GitHub-Api-Version': this.apiVersion,
+        },
+      });
 
-    return response.status;
+      return response.status;
+    } catch (err: any) {
+      this.errorHandler.handleError(err);
+    }
   }
 }

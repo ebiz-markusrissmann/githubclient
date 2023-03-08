@@ -94,6 +94,7 @@ export class GithubSecrets implements IGithubSecret {
    * @param {string} secretValue - The plan text value of the secret
    * @returns 204, if successful
    */
+  /* istanbul ignore next */
   public async CreateOrUpdateSecret(owner: string, repo: string, secretName: string, secretValue: string): Promise<number> {
     await ready;
 

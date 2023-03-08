@@ -1,6 +1,6 @@
+import { components } from '@octokit/openapi-types';
 import { OctokitResponse, ResponseHeaders } from '@octokit/types';
 import { Workflow } from '@octokit/webhooks-types';
-import { components } from '@octokit/openapi-types';
 
 export class OctokitResponseBuilder {
   public static getResponse<T, S extends number>(status: S, url: string, data: T, headers?: ResponseHeaders): OctokitResponse<T, S> {
@@ -16,6 +16,11 @@ export class OctokitResponseBuilder {
     return response;
   }
 }
+
+export type ListRepositoryVariablesResponse = {
+  total_count: number;
+  variables: components['schemas']['actions-variable'][];
+};
 
 export type ListWorkflowResponse = {
   total_count: number;
