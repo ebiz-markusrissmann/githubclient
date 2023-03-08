@@ -34,6 +34,7 @@ export class GithubSecrets implements IGithubSecret {
     } catch (err: any) {
       if (err.status === StatusCodes.NOT_FOUND) {
         const error: GithubClientError = {
+          name: 'GithubClientError',
           message: `Owner '${owner}', repository '${repo}' is unknown!`,
         };
         throw error;
@@ -65,6 +66,7 @@ export class GithubSecrets implements IGithubSecret {
     } catch (err: any) {
       if (err.status === StatusCodes.NOT_FOUND) {
         const error: GithubClientError = {
+          name: 'GithubClientError',
           message: `Owner '${owner}', repository '${repo}' or secret name '${secretName}' is unknown!`,
         };
         throw error;
@@ -95,6 +97,7 @@ export class GithubSecrets implements IGithubSecret {
     } catch (err: any) {
       if (err.request.url === `https://api.github.com/repos/${owner}/${repo}/actions/secrets/public-key`) {
         const error: GithubClientError = {
+          name: 'GithubClientError',
           message: `Cannot retrieve public-key for repo '${repo}' with owner '${owner}'`,
         };
         throw error;
@@ -145,6 +148,7 @@ export class GithubSecrets implements IGithubSecret {
       return postResponse.status;
     } catch (err: any) {
       const error: GithubClientError = {
+        name: 'GithubClientError',
         message: `Cannot update secret for repo '${repo}' with owner '${owner}'`,
       };
       throw error;
@@ -172,6 +176,7 @@ export class GithubSecrets implements IGithubSecret {
     } catch (err: any) {
       if (err.status === StatusCodes.NOT_FOUND) {
         const error: GithubClientError = {
+          name: 'GithubClientError',
           message: `Owner '${owner}', repository '${repo}' or secret name '${secretName}' is unknown!`,
         };
         throw error;

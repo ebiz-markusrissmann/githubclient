@@ -1,4 +1,5 @@
 import { components } from '@octokit/openapi-types';
+import { Workflow } from '@octokit/webhooks-types';
 
 export interface IGithubWorkflow {
   /**
@@ -7,7 +8,7 @@ export interface IGithubWorkflow {
    * @param {string} repo - The name of the repository
    * @returns {workflow[]}
    */
-  ListWorkflows(owner: string, repo: string): Promise<components['schemas']['workflow'][]>;
+  ListWorkflows(owner: string, repo: string): Promise<Workflow[]>;
 
   /**
    * Gets all infos to a specific workflow
@@ -16,7 +17,7 @@ export interface IGithubWorkflow {
    * @param {string} workflowName - The name of the workflow to trigger
    * @returns The requested workflow, if not found undefined
    */
-  GetWorkflow(owner: string, repo: string, workflowName: string): Promise<components['schemas']['workflow'] | undefined>;
+  GetWorkflow(owner: string, repo: string, workflow_id: number | string): Promise<Workflow | undefined>;
 
   /**
    *
@@ -26,7 +27,7 @@ export interface IGithubWorkflow {
    * @param {string} branch - The name of the branch from which the code is to be taken
    * @param {string} inputs - Input keys and values configured in the workflow file. The maximum number of properties is 10. Any default properties configured in the workflow file will be used when inputs are omitted.
    */
-  TriggerWorkflow(owner: string, repo: string, workflowName: string, branch: string, inputs?: any): Promise<void>;
+  TriggerWorkflow(owner: string, repo: string, workflowName: string, branch: string, inputs?: any): Promise<number | undefined>;
 
   /**
    *

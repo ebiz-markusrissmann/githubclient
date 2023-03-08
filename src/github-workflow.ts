@@ -1,13 +1,18 @@
 import { components } from '@octokit/openapi-types';
+import { Workflow } from '@octokit/webhooks-types';
 import { Octokit } from 'octokit';
+import { Logger } from 'winston';
+import { GithubClientError } from './interfaces/i-github-error';
 
 export class GithubWorkflow {
   private octokit: Octokit;
   private apiVersion: string;
+  private logger: Logger;
 
-  constructor(octokit: Octokit, apiVersion: string) {
+  constructor(octokit: Octokit, apiVersion: string, logger: Logger) {
     this.octokit = octokit;
     this.apiVersion = apiVersion;
+    this.logger = logger;
   }
 
   /**
@@ -16,28 +21,53 @@ export class GithubWorkflow {
    * @param {string} repo - The name of the repository
    * @returns {workflow[]}
    */
-  public async ListWorkflows(owner: string, repo: string): Promise<components['schemas']['workflow'][]> {
-    const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/workflows', {
-      owner: owner,
-      repo: repo,
-      headers: {
-        'X-GitHub-Api-Version': this.apiVersion,
-      },
-    });
+  public async ListWorkflows(owner: string, repo: string): Promise<Workflow[]> {
+    try {
+      const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/workflows', {
+        owner: owner,
+        repo: repo,
+        headers: {
+          'X-GitHub-Api-Version': this.apiVersion,
+        },
+      });
 
-    return response.data.workflows;
+      return response.data.workflows;
+    } catch (err: any) {
+      this.logger.error(JSON.stringify(err));
+      const error: GithubClientError = {
+        message: `HttpStatusCode: ${err.status} The request to ${err.response.url} failed! See ${err.response.data.documentation_url}`,
+        name: 'GithubClientError',
+      };
+      throw error;
+    }
   }
   /**
    * Gets all infos to a specific workflow
    * @param {string} owner - The account owner of the repository
    * @param {string} repo - The name of the repository
-   * @param {string} workflowName - The name of the workflow to trigger
+   * @param {number} workflow_id - The ID of the workflow. You can also pass the workflow file name as a string.
    * @returns The requested workflow, if not found undefined
    */
-  public async GetWorkflow(owner: string, repo: string, workflowName: string): Promise<components['schemas']['workflow'] | undefined> {
-    const workflows = await this.ListWorkflows(owner, repo);
-    const wf = workflows.find((a) => a.name === workflowName);
-    return wf;
+  public async GetWorkflow(owner: string, repo: string, workflow_id: number | string): Promise<Workflow | undefined> {
+    try {
+      const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}', {
+        owner,
+        repo,
+        workflow_id,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      });
+
+      return response.data;
+    } catch (err: any) {
+      this.logger.error(JSON.stringify(err));
+      const error: GithubClientError = {
+        message: `HttpStatusCode: ${err.status} The request to ${err.response.url} failed! See ${err.response.data.documentation_url}`,
+        name: 'GithubClientError',
+      };
+      throw error;
+    }
   }
 
   /**
@@ -48,22 +78,35 @@ export class GithubWorkflow {
    * @param {string} branch - The name of the branch from which the code is to be taken
    * @param {string} inputs - Input keys and values configured in the workflow file. The maximum number of properties is 10. Any default properties configured in the workflow file will be used when inputs are omitted.
    */
-  public async TriggerWorkflow(owner: string, repo: string, workflowName: string, branch: string, inputs?: any): Promise<void> {
-    const workflows = await this.ListWorkflows(owner, repo);
-    const wf = workflows.find((a) => a.name === workflowName);
+  public async TriggerWorkflow(owner: string, repo: string, workflowName: string, branch: string, inputs?: any): Promise<number | undefined> {
+    try {
+      const workflows = await this.ListWorkflows(owner, repo);
+      const wf = workflows.find((a) => a.name === workflowName);
 
-    if (wf) {
-      await this.octokit.request('POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches', {
-        owner: owner,
-        repo: repo,
-        workflow_id: wf!.id,
-        ref: branch,
-        inputs: inputs,
-        headers: {
-          'X-GitHub-Api-Version': this.apiVersion,
-        },
-      });
+      if (wf) {
+        const response = await this.octokit.request('POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches', {
+          owner: owner,
+          repo: repo,
+          workflow_id: wf!.id,
+          ref: branch,
+          inputs: inputs,
+          headers: {
+            'X-GitHub-Api-Version': this.apiVersion,
+          },
+        });
+
+        return response.status;
+      }
+    } catch (err: any) {
+      this.logger.error(JSON.stringify(err));
+      const error: GithubClientError = {
+        message: `HttpStatusCode: ${err.status} The request to ${err.response.url} failed! See ${err.response.data.documentation_url}`,
+        name: 'GithubClientError',
+      };
+      throw error;
     }
+    /* istanbul ignore next */
+    return undefined;
   }
 
   /**
@@ -73,15 +116,24 @@ export class GithubWorkflow {
    * @returns
    */
   public async ListWorkflowRuns(owner: string, repo: string): Promise<components['schemas']['workflow-run'][]> {
-    const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/runs', {
-      owner: owner,
-      repo: repo,
-      headers: {
-        'X-GitHub-Api-Version': this.apiVersion,
-      },
-    });
+    try {
+      const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/runs', {
+        owner: owner,
+        repo: repo,
+        headers: {
+          'X-GitHub-Api-Version': this.apiVersion,
+        },
+      });
 
-    return response.data.workflow_runs;
+      return response.data.workflow_runs;
+    } catch (err: any) {
+      this.logger.error(JSON.stringify(err));
+      const error: GithubClientError = {
+        message: `HttpStatusCode: ${err.status} The request to ${err.response.url} failed! See ${err.response.data.documentation_url}`,
+        name: 'GithubClientError',
+      };
+      throw error;
+    }
   }
 
   /**
@@ -92,15 +144,24 @@ export class GithubWorkflow {
    * @returns
    */
   public async GetWorkflowRun(owner: string, repo: string, run_id: number): Promise<components['schemas']['workflow-run']> {
-    const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}', {
-      owner: owner,
-      repo: repo,
-      run_id: run_id,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
-    });
-    return response.data;
+    try {
+      const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}', {
+        owner: owner,
+        repo: repo,
+        run_id: run_id,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      });
+      return response.data;
+    } catch (err: any) {
+      this.logger.error(JSON.stringify(err));
+      const error: GithubClientError = {
+        message: `HttpStatusCode: ${err.status} The request to ${err.response.url} failed! See ${err.response.data.documentation_url}`,
+        name: 'GithubClientError',
+      };
+      throw error;
+    }
   }
 
   /**
@@ -111,18 +172,29 @@ export class GithubWorkflow {
    * @returns
    */
   public async DownloadWorkflowRunLogs(owner: string, repo: string, run_id: number): Promise<string | undefined> {
-    const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}/logs', {
-      owner: owner,
-      repo: repo,
-      run_id: run_id,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
-    });
+    try {
+      const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}/logs', {
+        owner: owner,
+        repo: repo,
+        run_id: run_id,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      });
 
-    if (response.status === 302) {
-      return response.headers.location;
+      if (response.status === 302) {
+        return response.headers.location;
+      }
+    } catch (err: any) {
+      this.logger.error(JSON.stringify(err));
+      const error: GithubClientError = {
+        message: `HttpStatusCode: ${err.status} The request to ${err.response.url} failed! See ${err.response.data.documentation_url}`,
+        name: 'GithubClientError',
+      };
+      throw error;
     }
+
+    /* istanbul ignore next */
     return undefined;
   }
 
@@ -134,16 +206,25 @@ export class GithubWorkflow {
    * @returns
    */
   public async GetWorkflowUsage(owner: string, repo: string, workflow_id: number): Promise<components['schemas']['workflow-usage']> {
-    const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/timing', {
-      owner,
-      repo,
-      workflow_id,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
-    });
+    try {
+      const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/timing', {
+        owner,
+        repo,
+        workflow_id,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      });
 
-    return response.data;
+      return response.data;
+    } catch (err: any) {
+      this.logger.error(JSON.stringify(err));
+      const error: GithubClientError = {
+        message: `HttpStatusCode: ${err.status} The request to ${err.response.url} failed! See ${err.response.data.documentation_url}`,
+        name: 'GithubClientError',
+      };
+      throw error;
+    }
   }
 
   /**
@@ -154,15 +235,24 @@ export class GithubWorkflow {
    * @returns
    */
   public async DisableWorkflow(owner: string, repo: string, workflow_id: number): Promise<number> {
-    const response = await this.octokit.request('PUT /repos/{owner}/{repo}/actions/workflows/{workflow_id}/disable', {
-      owner,
-      repo,
-      workflow_id,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
-    });
-    return response.status;
+    try {
+      const response = await this.octokit.request('PUT /repos/{owner}/{repo}/actions/workflows/{workflow_id}/disable', {
+        owner,
+        repo,
+        workflow_id,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      });
+      return response.status;
+    } catch (err: any) {
+      this.logger.error(JSON.stringify(err));
+      const error: GithubClientError = {
+        message: `HttpStatusCode: ${err.status} The request to ${err.response.url} failed! See ${err.response.data.documentation_url}`,
+        name: 'GithubClientError',
+      };
+      throw error;
+    }
   }
 
   /**
@@ -173,14 +263,23 @@ export class GithubWorkflow {
    * @returns
    */
   public async EnableWorkflow(owner: string, repo: string, workflow_id: number): Promise<number> {
-    const response = await this.octokit.request('PUT /repos/{owner}/{repo}/actions/workflows/{workflow_id}/enable', {
-      owner,
-      repo,
-      workflow_id,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
-    });
-    return response.status;
+    try {
+      const response = await this.octokit.request('PUT /repos/{owner}/{repo}/actions/workflows/{workflow_id}/enable', {
+        owner,
+        repo,
+        workflow_id,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      });
+      return response.status;
+    } catch (err: any) {
+      this.logger.error(JSON.stringify(err));
+      const error: GithubClientError = {
+        message: `HttpStatusCode: ${err.status} The request to ${err.response.url} failed! See ${err.response.data.documentation_url}`,
+        name: 'GithubClientError',
+      };
+      throw error;
+    }
   }
 }

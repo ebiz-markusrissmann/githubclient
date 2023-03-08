@@ -1,4 +1,5 @@
 import { components } from '@octokit/openapi-types';
+import { Workflow } from '@octokit/webhooks-types';
 
 export interface IGithubActionsClient {
   /**
@@ -7,7 +8,7 @@ export interface IGithubActionsClient {
    * @param {string} repo - The name of the repository
    * @returns
    */
-  ListWorkflows(owner: string, repo: string): Promise<components['schemas']['workflow'][]>;
+  ListWorkflows(owner: string, repo: string): Promise<Workflow[]>;
 
   /**
    * Gets a specific workflow.
@@ -16,7 +17,7 @@ export interface IGithubActionsClient {
    * @param {string} workflowName - The name of the workflow to trigger
    * @returns The requested workflow, if not found undefined
    */
-  GetWorkflow(owner: string, repo: string, workflowName: string): Promise<components['schemas']['workflow'] | undefined>;
+  GetWorkflow(workflow_id: number | string): Promise<Workflow | undefined>;
 
   /**
    * You can use this method to manually trigger a GitHub Actions workflow run.
