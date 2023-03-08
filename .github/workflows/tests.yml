@@ -28,5 +28,10 @@ jobs:
           github-token: ${{ secrets.GH_TOKEN }}
           working-directory: .
           update-comment: true
-        
+      - name: Generate coverage badge
+        uses: tj-actions/coverage-badge-js@v1.3
+        with:
+          path: .
+          report_path: coverage/coverage-final.json
+          output_path: coverage
    
