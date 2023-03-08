@@ -19,7 +19,7 @@ pids
 lib-cov
 
 # Coverage directory used by tools like istanbul
-coverage
+coverage/lcov-report
 *.lcov
 
 # nyc test coverage
@@ -112,3 +112,7 @@ Editor settings
 .vscode/
 tsconfig.json
 src/app.ts
+coverage/clover.xml
+coverage/coverage-final.json
+coverage/coverage-summary.json
+coverage/lcov.info
