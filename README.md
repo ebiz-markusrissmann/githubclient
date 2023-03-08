@@ -1,6 +1,6 @@
 # github-actions-client
 
-This library is a Wrppaer library that uses Octokit in the background. Aktell can use it to create, update and delete repository secrets and repository variables. Workflow dispatch events can be triggered with it. Also workflows can be loaded, activated or deactivated.
+This library is a Wrapper library that uses Octokit in the background. Currently can use it to create, update and delete repository secrets and repository variables. Workflow dispatch events can be triggered with it. Also workflows can be loaded, activated or deactivated.
 
 ## Installation
 
