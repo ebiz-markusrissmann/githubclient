@@ -17,9 +17,10 @@ npm i github-actions-client
 ```ps
 yarn add github-actions-client
 ```
+<br/>
 
 ## Usage
-
+<br/>
 
 ```ts
 import { GithubActionsClient } from 'github-actions-client'
@@ -50,7 +51,25 @@ main()
   });
 
 ```
+<br/>
 
+## The GithubActionsClient constructor
+<br/>
+
+```ts
+constructor(github_username: string, github_repository: string, githubToken?: string, apiVersion?: string) {...}
+
+```
+**github_username** -> Your github username.
+
+**github_repository** -> Repository where the actions should be performed.
+
+**githubToken** -> (optional) Your personal token. If not provided the environment variable GITHUB_TOKEN will be used.
+
+**api Version** -> (optional) A specific API version. If not provided '2022-11-28' will be used .
+**_Project is tested with this version_**
+
+<br/>
 
 ## Code Documentation
 [GithubActionsClient](docs/README.md)
