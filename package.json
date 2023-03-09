@@ -67,6 +67,7 @@
   ],
   "exports": {
     "./github": "./lib/src/github.ts",
+    "./github_cjs": "./lib/cjs/github.js",
     ".": {
       "import": {
         "types": "./lib/esm/types/github.d.ts",

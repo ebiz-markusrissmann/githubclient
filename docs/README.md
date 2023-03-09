@@ -6,41 +6,19 @@ Get all workflows of a specific repository and a specific owner
 
 **RETURNS**
 
-Promise&lt;object[]
-- `id`: number
-- `node_id`: string
-- `name`: string
-- `path`: string
-- `state`: `'active'` | `'deleted'` | `'disabled_fork'` | `'disabled_inactivity'` | `'disabled_manually'`
-- `created_at`: string - Format: date-time
-- `updated_at`: string - Format: date-time
-- `url`: string
-- `html_url`: string
-- `badge_url`: string
-- `deleted_at?`: string - Format: date-time&gt;
+Promise&lt;Workflow[]&gt;
 
-## githubActionsClient.GetWorkflow(workflowName)
+## githubActionsClient.GetWorkflow(workflow_id)
 
 Gets all infos to a specific workflow
 
 **PARAMETERS**
 
-- `workflowName`: string - The name of the workflow to trigger
+- `workflow_id`: string | number
 
 **RETURNS**
 
-Promise&lt;object
-- `id`: number
-- `node_id`: string
-- `name`: string
-- `path`: string
-- `state`: `'active'` | `'deleted'` | `'disabled_fork'` | `'disabled_inactivity'` | `'disabled_manually'`
-- `created_at`: string - Format: date-time
-- `updated_at`: string - Format: date-time
-- `url`: string
-- `html_url`: string
-- `badge_url`: string
-- `deleted_at?`: string - Format: date-time&gt;
+Promise&lt;Workflow&gt;
 
 ## githubActionsClient.TriggerWorkflow(workflowName, branch)
 
@@ -905,7 +883,7 @@ Usage is listed for each GitHub-hosted runner operating system in milliseconds. 
 
 **PARAMETERS**
 
-- `workflow_id`: number - - The ID of the workflow
+- `workflow_id`: number - The ID of the workflow
 
 **RETURNS**
 
@@ -924,7 +902,7 @@ Disables a workflow and sets the state of the workflow to disabled_manually. You
 
 **PARAMETERS**
 
-- `workflow_id`: number - - The ID of the workflow
+- `workflow_id`: number - The ID of the workflow
 
 **RETURNS**
 
@@ -936,7 +914,7 @@ Enables a workflow and sets the state of the workflow to active. You can replace
 
 **PARAMETERS**
 
-- `workflow_id`: number - - The ID of the workflow
+- `workflow_id`: number - The ID of the workflow
 
 **RETURNS**
 
