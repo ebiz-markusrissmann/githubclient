@@ -1,7 +1,6 @@
 import { components } from '@octokit/openapi-types/types';
 import { Workflow } from '@octokit/webhooks-types';
 import { Octokit } from 'octokit';
-import winston, { createLogger, Logger } from 'winston';
 import { GithubSecrets } from './github-secrets';
 import { GithubVariables } from './github-variables';
 import { GithubWorkflow } from './github-workflow';
@@ -18,7 +17,6 @@ export class GithubActionsClient implements IGithubActionsClient {
   github_username: string;
   github_repository: string;
   github_apiVersion: string;
-  logger: Logger;
   errorHandler: ErrorHandler;
 
   /**
@@ -29,18 +27,12 @@ export class GithubActionsClient implements IGithubActionsClient {
    * @param apiVersion  the guithub api verion, e.g. 2022-11-28. This verison is used as default version
    */
   constructor(github_username: string, github_repository: string, githubToken?: string, apiVersion?: string) {
-    this.logger = createLogger({
-      level: process.env.LOG_LEVEL ?? 'info',
-      format: winston.format.json(),
-      transports: [new winston.transports.File({ filename: 'error.log', level: 'error' }), new winston.transports.File({ filename: 'github-client.log', level: 'info' }), new winston.transports.Console({})],
-    });
-
-    this.errorHandler = new ErrorHandler(this.logger);
+    this.errorHandler = new ErrorHandler();
     this.github_apiVersion = apiVersion ?? '2022-11-28';
     this.octokitClient = new Octokit({ auth: githubToken ?? process.env.GITHUB_TOKEN });
-    this.githubWorkFlow = new GithubWorkflow(this.octokitClient, this.github_apiVersion, this.logger, this.errorHandler);
-    this.githubVariables = new GithubVariables(this.octokitClient, this.github_apiVersion, this.logger, this.errorHandler);
-    this.githubSecrets = new GithubSecrets(this.octokitClient, this.github_apiVersion, this.logger, this.errorHandler);
+    this.githubWorkFlow = new GithubWorkflow(this.octokitClient, this.github_apiVersion, this.errorHandler);
+    this.githubVariables = new GithubVariables(this.octokitClient, this.github_apiVersion, this.errorHandler);
+    this.githubSecrets = new GithubSecrets(this.octokitClient, this.github_apiVersion, this.errorHandler);
     this.github_username = github_username;
     this.github_repository = github_repository;
   }

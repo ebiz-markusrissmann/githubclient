@@ -1,20 +1,17 @@
 import { components } from '@octokit/openapi-types';
 import { base64_variants, crypto_box_seal, from_base64, from_string, ready, to_base64 } from 'libsodium-wrappers';
 import { Octokit } from 'octokit';
-import { Logger } from 'winston';
 import { IGithubSecret } from './interfaces/i-github-secrets';
 import { ErrorHandler } from './tools-utils/error-handler';
 
 export class GithubSecrets implements IGithubSecret {
   private octokit: Octokit;
   private apiVersion: string;
-  private logger: Logger;
   private errorHandler: ErrorHandler;
 
-  constructor(octokit: Octokit, apiVersion: string, logger: Logger, errorHandler: ErrorHandler) {
+  constructor(octokit: Octokit, apiVersion: string, errorHandler: ErrorHandler) {
     this.octokit = octokit;
     this.apiVersion = apiVersion;
-    this.logger = logger;
     this.errorHandler = errorHandler;
   }
 
@@ -25,7 +22,6 @@ export class GithubSecrets implements IGithubSecret {
    * @returns A list of all secrets
    */
   public async ListRepositorySecrets(owner: string, repo: string): Promise<components['schemas']['actions-secret'][]> {
-    this.logger.debug('Execute ListRepositorySecrets');
     try {
       const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/secrets', {
         owner: owner,

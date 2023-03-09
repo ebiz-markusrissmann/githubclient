@@ -1,19 +1,17 @@
 import { components } from '@octokit/openapi-types';
 import { Octokit } from 'octokit';
-import { Logger } from 'winston';
 import { IGithubVariables } from './interfaces/i-github-variables';
 import { ErrorHandler } from './tools-utils/error-handler';
 
 export class GithubVariables implements IGithubVariables {
   private octokit: Octokit;
   private apiVersion: string;
-  private logger: Logger;
+
   private errorHandler: ErrorHandler;
 
-  constructor(octokit: Octokit, apiVersion: string, logger: Logger, errorhandler: ErrorHandler) {
+  constructor(octokit: Octokit, apiVersion: string, errorhandler: ErrorHandler) {
     this.octokit = octokit;
     this.apiVersion = apiVersion;
-    this.logger = logger;
     this.errorHandler = errorhandler;
   }
 
@@ -24,8 +22,6 @@ export class GithubVariables implements IGithubVariables {
    * @returns All variables of the repository
    */
   public async ListRepositoryVariables(owner: string, repo: string): Promise<components['schemas']['actions-variable'][]> {
-    this.logger.debug('Execute ListRepositoryVariables');
-
     try {
       const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/variables', {
         owner: owner,

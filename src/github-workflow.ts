@@ -1,19 +1,18 @@
 import { components } from '@octokit/openapi-types';
 import { Workflow } from '@octokit/webhooks-types';
 import { Octokit } from 'octokit';
-import { Logger } from 'winston';
+
 import { ErrorHandler } from './tools-utils/error-handler';
 
 export class GithubWorkflow {
   private octokit: Octokit;
   private apiVersion: string;
-  private logger: Logger;
   private errorHandler: ErrorHandler;
 
-  constructor(octokit: Octokit, apiVersion: string, logger: Logger, errorHandler: ErrorHandler) {
+  constructor(octokit: Octokit, apiVersion: string, errorHandler: ErrorHandler) {
     this.octokit = octokit;
     this.apiVersion = apiVersion;
-    this.logger = logger;
+
     this.errorHandler = errorHandler;
   }
 
@@ -24,7 +23,6 @@ export class GithubWorkflow {
    * @returns {workflow[]}
    */
   public async ListWorkflows(owner: string, repo: string): Promise<Workflow[]> {
-    this.logger.debug('Called ListWorkflows');
     try {
       const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/workflows', {
         owner: owner,

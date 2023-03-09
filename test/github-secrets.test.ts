@@ -2,20 +2,12 @@ import { components } from '@octokit/openapi-types/types';
 import { StatusCodes } from 'http-status-codes';
 import { mock, mockReset } from 'jest-mock-extended';
 import { Octokit } from 'octokit';
-import winston, { createLogger, Logger } from 'winston';
 import { OctokitResponseBuilder } from './tools-utils/octokit-response-builder';
 import { GithubSecrets } from '../src/github-secrets';
 import { GithubError } from '../src/models/github-error';
 import { ErrorHandler } from '../src/tools-utils/error-handler';
 
-const logger: Logger = createLogger({
-  level: process.env.LOG_LEVEL ?? 'debug',
-  format: winston.format.json(),
-  transports: [new winston.transports.File({ filename: 'error.log', level: 'error' }), new winston.transports.File({ filename: 'github-client.log', level: 'info' }), new winston.transports.Console({})],
-  defaultMeta: { dateTime: Date().toLocaleUpperCase() },
-});
-
-const errorHandler: ErrorHandler = new ErrorHandler(logger);
+const errorHandler: ErrorHandler = new ErrorHandler();
 
 describe('Test github-secrets.ts', () => {
   const apiVersion = '2022-11-28';
@@ -45,7 +37,7 @@ describe('Test github-secrets.ts', () => {
     const octokitResponse = OctokitResponseBuilder.getResponse(StatusCodes.OK, '', githbuSecretResponse);
 
     octokitMock.request.mockImplementation(() => Promise.resolve(octokitResponse));
-    const githubSecrets = new GithubSecrets(octokitMock, apiVersion, logger, errorHandler);
+    const githubSecrets = new GithubSecrets(octokitMock, apiVersion, errorHandler);
     const githubSecretsList = await githubSecrets.ListRepositorySecrets('me', 'my-repo');
 
     expect(githubSecretsList.length).toBe(2);
@@ -62,7 +54,7 @@ describe('Test github-secrets.ts', () => {
     const octokitResponse = OctokitResponseBuilder.getResponse(StatusCodes.OK, '', githubSecretResponse);
 
     octokitMock.request.mockImplementation(() => Promise.resolve(octokitResponse));
-    const githubSecrets = new GithubSecrets(octokitMock, apiVersion, logger, errorHandler);
+    const githubSecrets = new GithubSecrets(octokitMock, apiVersion, errorHandler);
     const githubSecret = await githubSecrets.GetRepositorySecret('me', 'my-repo', 'Extreme Secret2');
 
     expect(githubSecret).toEqual(githubSecretResponse);
@@ -92,7 +84,7 @@ describe('Test github-secrets.ts', () => {
     };
 
     octokitMock.request.mockImplementation(() => Promise.reject(error));
-    const ghs = new GithubSecrets(octokitMock, apiVersion, logger, errorHandler);
+    const ghs = new GithubSecrets(octokitMock, apiVersion, errorHandler);
 
     await expect(ghs.GetRepositorySecret('me', 'er', 'er')).rejects.toEqual({
       message: 'HttpStatusCode: 404 The request to https://api.github.com/repos/me/er/actions/secrets/er failed! See https://docs.github.com/rest/reference/actions#get-a-repository-secret',
@@ -122,7 +114,7 @@ describe('Test github-secrets.ts', () => {
     };
 
     octokitMock.request.mockImplementation(() => Promise.reject(error));
-    const ghs = new GithubSecrets(octokitMock, apiVersion, logger, errorHandler);
+    const ghs = new GithubSecrets(octokitMock, apiVersion, errorHandler);
 
     await expect(ghs.ListRepositorySecrets('me', 'er')).rejects.toEqual({
       message: 'HttpStatusCode: 404 The request to https://api.github.com/repos/me/er/actions/secrets failed! See https://docs.github.com/rest/reference/actions#list-repository-secrets',
@@ -152,7 +144,7 @@ describe('Test github-secrets.ts', () => {
     };
 
     octokitMock.request.mockImplementation(() => Promise.reject(error));
-    const ghs = new GithubSecrets(octokitMock, apiVersion, logger, errorHandler);
+    const ghs = new GithubSecrets(octokitMock, apiVersion, errorHandler);
     await expect(ghs.CreateOrUpdateSecret('me', 'repo', 'secret name', 'secret value')).rejects.toEqual({
       message: 'HttpStatusCode: 404 The request to https://api.github.com/repos/me/repo/actions/secrets/public-key failed! See https://docs.github.com/rest/reference/actions#get-a-repository-public-key',
       name: 'GithubClientError',
@@ -190,11 +182,10 @@ describe('Test github-secrets.ts', () => {
     octokitMock.request.mockImplementationOnce(() => Promise.resolve(githubSecretsPublicKeyResponse));
     octokitMock.request.mockImplementationOnce(() => Promise.reject(error));
 
-    const ghs = new GithubSecrets(octokitMock, apiVersion, logger, errorHandler);
+    const ghs = new GithubSecrets(octokitMock, apiVersion, errorHandler);
     await expect(ghs.CreateOrUpdateSecret(owner, repo, 'secretName', 'secretValue')).rejects.toEqual({ message: "Cannot update secret for repo 'mwaa-pitch' with owner 'ebiz-markusrissmann'" });
   });
 
-  
   it('Test GetPublicKey', async () => {
     const data: components['schemas']['actions-public-key'] = {
       key_id: '123123',
@@ -204,12 +195,12 @@ describe('Test github-secrets.ts', () => {
 
     octokitMock.request.mockImplementation(() => Promise.resolve(response2));
 
-    const githubSecrets = new GithubSecrets(octokitMock, apiVersion, logger, errorHandler);
+    const githubSecrets = new GithubSecrets(octokitMock, apiVersion, errorHandler);
     const updateVariableResponse = await githubSecrets.GetPublicKey('me', 'my-repo');
 
     expect(updateVariableResponse).toEqual(data);
 
-    expect(octokitMock.request).toHaveBeenCalledWith('GET /repos/{owner}/{repo}/actions/secrets/public-key', { headers: { 'X-GitHub-Api-Version': '2022-11-28' },  owner: 'me', repo: 'my-repo' });
+    expect(octokitMock.request).toHaveBeenCalledWith('GET /repos/{owner}/{repo}/actions/secrets/public-key', { headers: { 'X-GitHub-Api-Version': '2022-11-28' }, owner: 'me', repo: 'my-repo' });
   });
 
   it('Test DeleteRepositoryVariable', async () => {
@@ -217,7 +208,7 @@ describe('Test github-secrets.ts', () => {
 
     octokitMock.request.mockImplementation(() => Promise.resolve(response2));
 
-    const githubSecrets = new GithubSecrets(octokitMock, apiVersion, logger, errorHandler);
+    const githubSecrets = new GithubSecrets(octokitMock, apiVersion, errorHandler);
     const updateVariableResponse = await githubSecrets.DeleteRepositorySecret('me', 'my-repo', 'dodo');
 
     expect(updateVariableResponse).toBe(StatusCodes.NO_CONTENT);
@@ -250,7 +241,7 @@ describe('Test github-secrets.ts', () => {
 
     octokitMock.request.mockImplementation(() => Promise.reject(error));
 
-    const ghs = new GithubSecrets(octokitMock, apiVersion, logger, errorHandler);
+    const ghs = new GithubSecrets(octokitMock, apiVersion, errorHandler);
     await expect(ghs.DeleteRepositorySecret(owner, repo, 'secretName')).rejects.toEqual({
       message: 'HttpStatusCode: 404 The request to https://api.github.com/repos/me/repo/actions/secrets/secretName failed! See https://docs.github.com/rest/reference/actions#delete-a-repository-secret',
       name: 'GithubClientError',
