@@ -57,7 +57,11 @@ main()
 <br/>
 
 ```ts
-constructor(github_username: string, github_repository: string, githubToken?: string, apiVersion?: string) {...}
+constructor(
+  github_username: string, 
+  github_repository: string, 
+  githubToken?: string, 
+  apiVersion?: string) {...}
 
 ```
 **github_username** -> Your github username.
