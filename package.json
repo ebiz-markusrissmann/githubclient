@@ -17,8 +17,7 @@
     "build:cjs": "tsc -p ./tsconfig.cjs.json",
     "prepack": "npm run build",
     "semantic-release": "semantic-release",
-    "doku": "npx typescript-documentation -p tsconfig.base.json -e ./src/github.ts",
-    "createbadge": "coverage-badges --output coverage/badges.svg --source coverage/coverage-final.json"
+    "doku": "npx typescript-documentation -p tsconfig.base.json -e ./src/github.ts"    
   },
   "dependencies": {    
     "http-status-codes": "^2.2.0",
