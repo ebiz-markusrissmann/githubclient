@@ -14,9 +14,9 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3        
       - name: Install dependencies
-        run: yarn install
+        run: npm install
       - name: Unit tests
-        run: yarn test
+        run: npm run test
       - name: Setup LCOV
         uses: hrishikesh-kadam/setup-lcov@v1
       - name: Report code coverage
