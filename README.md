@@ -3,7 +3,7 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/ebiz-markusrissmann/githubclient/badge.svg)](https://snyk.io/test/github/ebiz-markusrissmann/githubclient)
 [![Coverage lines](coverage/badge-lines.svg)](coverage/badge-lines.svg)
 
-This library is a Wrapper library that uses Octokit in the background. Currently can use it to create, update and delete repository secrets and repository variables. Workflow dispatch events can be triggered with it. Also workflows can be loaded, activated or deactivated.
+This library is a Wrapper library that uses Octokit in the background. Currently you can use it to create, update and delete repository secrets and repository variables. Workflow dispatch events can be triggered with it. Also workflows can be loaded, activated or deactivated.
 
 
 ## Installation
