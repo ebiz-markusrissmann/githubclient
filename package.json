@@ -8,7 +8,7 @@
     "url": "https://github.com/ebiz-markusrissmann/githubclient.git"
   },
   "scripts": {
-    "test": "shx rm -fr lib && tsc --noEmit --project tsconfig.jest.json && jest -c jest.unit.config.ts --all --ci --passWithNoTests --maxWorkers=4 --coverage && jest-coverage-badges",
+    "test": "shx rm -fr lib && tsc --noEmit --project tsconfig.jest.json && jest -c jest.unit.config.ts --all --ci --passWithNoTests --maxWorkers=4 --coverage",
     "eslint": "eslint --ext .ts,.tsx --fix --no-error-on-unmatched-pattern src test build-tools",
     "prettier": "prettier -w src/ test/",
     "clean": "shx rm -rf ./lib",
