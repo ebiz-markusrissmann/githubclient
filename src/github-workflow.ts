@@ -92,7 +92,7 @@ export class GithubWorkflow {
       this.errorHandler.handleError(err);
     }
     /* istanbul ignore next */
-    return undefined;
+    return 404;
   }
 
   /**
