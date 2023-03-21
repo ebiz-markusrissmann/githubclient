@@ -7,6 +7,8 @@ jobs:
       - uses: actions/checkout@main
       - name: Install dependencies
         run: npm install
+      - name: Authenticate Snyk
+        run: snyk config set api=${{secrets.SNYK_TOKEN}}
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
         env:
