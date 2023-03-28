@@ -42,7 +42,7 @@
     "jest-junit": "^15.0.0",
     "jest-mock-extended": "^3.0.3",
     "prettier": "^2.8.5",
-    "semantic-release": "^20.1.1",
+    "semantic-release": "^21.0.0",
     "shx": "^0.3.4",
     "ts-jest": "^29.0.5",
     "typescript-documentation": "^3.0.2"
