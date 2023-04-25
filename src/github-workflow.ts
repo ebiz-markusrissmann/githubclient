@@ -158,9 +158,7 @@ export class GithubWorkflow {
         },
       });
 
-      if (response.status === 302) {
-        return response.headers.location;
-      }
+      return response.url;
     } catch (err: any) {
       this.errorHandler.handleError(err);
     }
@@ -234,6 +232,22 @@ export class GithubWorkflow {
         },
       });
       return response.status;
+    } catch (err: any) {
+      this.errorHandler.handleError(err);
+    }
+  }
+
+  public async rrr(owner: string, repo: string, workflow_id: string): Promise<components['schemas']['workflow-run'][]> {
+    try {
+      const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs', {
+        owner,
+        repo,
+        workflow_id,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      });
+      return response.data.workflow_runs;
     } catch (err: any) {
       this.errorHandler.handleError(err);
     }
