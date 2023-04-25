@@ -26,8 +26,8 @@
     "esModuleInterop": true,
     "declarationDir": "../lib/types",   
     "declarationMap": true,
-    "allowSyntheticDefaultImports": true
-    
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*.ts", "app.ts"],
   "exclude": ["node_modules", "cdk.out"]
