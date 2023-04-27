@@ -29,7 +29,7 @@
     "@octokit/webhooks-types": "6.10.0"
   },
   "devDependencies": {    
-    "@octokit/types": "9.0.0",
+    "@octokit/types": "9.1.2",
     "@types/jest": "^29.5.0",
     "@types/libsodium-wrappers": "^0.7.10",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
