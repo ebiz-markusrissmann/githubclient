@@ -20,12 +20,11 @@
     "doku": "npx typescript-documentation -p tsconfig.base.json -e ./src/github.ts"
   },
   "dependencies": {
-    "@faker-js/faker": "^7.6.0",  
-    "@types/faker": "^6.6.9",    
+    "@faker-js/faker": "^7.6.0",
     "http-status-codes": "2.2.0",
     "istanbul-lib-coverage": "^3.2.0",
     "libsodium-wrappers": "0.7.11",
-    "octokit": "^2.0.0",
+    "octokit": "2.0.0",
     "ts-node": "10.9.1",
     "typescript": "4.9.5"
   },
