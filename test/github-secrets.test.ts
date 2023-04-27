@@ -1,4 +1,3 @@
-import { components } from '@octokit/openapi-types/types';
 import { StatusCodes } from 'http-status-codes';
 import { mock, mockReset } from 'jest-mock-extended';
 import { Octokit } from 'octokit';
@@ -6,6 +5,10 @@ import { OctokitResponseBuilder } from './tools-utils/octokit-response-builder';
 import { GithubSecrets } from '../src/github-secrets';
 import { GithubError } from '../src/models/github-error';
 import { ErrorHandler } from '../src/tools-utils/error-handler';
+import { IActionsSecret } from '../src/interfaces/responses/I-actions-secret';
+import { createFakeActionsSecret } from './factories/fake-actions-secrets-factory';
+import { IActionsPublicKey } from '../src/interfaces/responses/i-actions-public-key';
+import { createFakeActionsPublicKey } from './factories/fake-actions-public-key';
 
 const errorHandler: ErrorHandler = new ErrorHandler();
 
@@ -18,16 +21,8 @@ describe('Test github-secrets.ts', () => {
   });
 
   it('Test ListRepositorySecrets', async () => {
-    const secret1: components['schemas']['actions-secret'] = {
-      created_at: Date().toLocaleString(),
-      updated_at: Date().toLocaleString(),
-      name: 'Extreme Secret1',
-    };
-    const secret2: components['schemas']['actions-secret'] = {
-      created_at: Date().toLocaleString(),
-      updated_at: Date().toLocaleString(),
-      name: 'Extreme Secret2',
-    };
+    const secret1: IActionsSecret = createFakeActionsSecret();
+    const secret2: IActionsSecret = createFakeActionsSecret();
 
     const githbuSecretResponse = {
       total_count: 2,
@@ -46,20 +41,16 @@ describe('Test github-secrets.ts', () => {
   });
 
   it('Test GetRepositorySecret', async () => {
-    const githubSecretResponse: components['schemas']['actions-secret'] = {
-      created_at: Date().toLocaleString(),
-      updated_at: Date().toLocaleString(),
-      name: 'Extreme Secret2',
-    };
+    const githubSecretResponse: IActionsSecret = createFakeActionsSecret();
     const octokitResponse = OctokitResponseBuilder.getResponse(StatusCodes.OK, '', githubSecretResponse);
 
     octokitMock.request.mockImplementation(() => Promise.resolve(octokitResponse));
     const githubSecrets = new GithubSecrets(octokitMock, apiVersion, errorHandler);
-    const githubSecret = await githubSecrets.GetRepositorySecret('me', 'my-repo', 'Extreme Secret2');
+    const githubSecret = await githubSecrets.GetRepositorySecret('me', 'my-repo', githubSecretResponse.name);
 
     expect(githubSecret).toEqual(githubSecretResponse);
     expect(octokitMock.request).toBeCalledTimes(1);
-    expect(octokitMock.request).toBeCalledWith('GET /repos/{owner}/{repo}/actions/secrets/{secret_name}', { headers: { 'X-GitHub-Api-Version': '2022-11-28' }, owner: 'me', repo: 'my-repo', secret_name: 'Extreme Secret2' });
+    expect(octokitMock.request).toBeCalledWith('GET /repos/{owner}/{repo}/actions/secrets/{secret_name}', { headers: { 'X-GitHub-Api-Version': '2022-11-28' }, owner: 'me', repo: 'my-repo', secret_name: githubSecretResponse.name });
   });
 
   it('Test GetRepositorySecret -> 404', async () => {
@@ -187,10 +178,7 @@ describe('Test github-secrets.ts', () => {
   });
 
   it('Test GetPublicKey', async () => {
-    const data: components['schemas']['actions-public-key'] = {
-      key_id: '123123',
-      key: '123123123123123123',
-    };
+    const data: IActionsPublicKey = createFakeActionsPublicKey();
     const response2 = OctokitResponseBuilder.getResponse(StatusCodes.OK, '', data);
 
     octokitMock.request.mockImplementation(() => Promise.resolve(response2));

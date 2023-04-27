@@ -1,5 +1,6 @@
 import { components } from '@octokit/openapi-types';
 import { Workflow } from '@octokit/webhooks-types';
+import { WorkflowRun } from '../data/workflow-run';
 
 export interface IGithubActionsClient {
   /**
@@ -109,14 +110,14 @@ export interface IGithubActionsClient {
   /**
    * Lists all workflow runs for a repository.
    */
-  ListWorkflowRuns(): Promise<components['schemas']['workflow-run'][]>;
+  ListWorkflowRuns(): Promise<WorkflowRun[]>;
 
   /**
    * Gets a specific workflow run
    * @param run_id - The unique identifier of the workflow run.
    * @returns
    */
-  GetWorkflowRun(run_id: number): Promise<components['schemas']['workflow-run']>;
+  GetWorkflowRun(run_id: number): Promise<WorkflowRun>;
 
   /**
    * Gets a redirect URL to download an archive of log files for a workflow run. This link expires after 1 minute.

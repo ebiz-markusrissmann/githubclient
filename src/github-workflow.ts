@@ -1,10 +1,11 @@
-import { components } from '@octokit/openapi-types';
-import { Workflow } from '@octokit/webhooks-types';
 import { Octokit } from 'octokit';
-
 import { ErrorHandler } from './tools-utils/error-handler';
+import { Workflow } from './data/workflow';
+import { WorkflowRun } from './data/workflow-run';
+import { IGithubWorkflow } from './interfaces/i-github-workflows';
+import { IWorkflowUsage } from './interfaces/responses/i-workflow-usage';
 
-export class GithubWorkflow {
+export class GithubWorkflow implements IGithubWorkflow {
   private octokit: Octokit;
   private apiVersion: string;
   private errorHandler: ErrorHandler;
@@ -101,7 +102,7 @@ export class GithubWorkflow {
    * @param {string} repo - The name of the repository
    * @returns
    */
-  public async ListWorkflowRuns(owner: string, repo: string): Promise<components['schemas']['workflow-run'][]> {
+  public async ListWorkflowRuns(owner: string, repo: string): Promise<WorkflowRun[]> {
     try {
       const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/runs', {
         owner: owner,
@@ -124,7 +125,7 @@ export class GithubWorkflow {
    * @param {number} run_id - The unique identifier of the workflow run
    * @returns
    */
-  public async GetWorkflowRun(owner: string, repo: string, run_id: number): Promise<components['schemas']['workflow-run']> {
+  public async GetWorkflowRun(owner: string, repo: string, run_id: number): Promise<WorkflowRun> {
     try {
       const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}', {
         owner: owner,
@@ -174,7 +175,7 @@ export class GithubWorkflow {
    * @param workflow_id - The ID of the workflow
    * @returns
    */
-  public async GetWorkflowUsage(owner: string, repo: string, workflow_id: number): Promise<components['schemas']['workflow-usage']> {
+  public async GetWorkflowUsage(owner: string, repo: string, workflow_id: number): Promise<IWorkflowUsage> {
     try {
       const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/timing', {
         owner,
@@ -237,7 +238,7 @@ export class GithubWorkflow {
     }
   }
 
-  public async rrr(owner: string, repo: string, workflow_id: string): Promise<components['schemas']['workflow-run'][]> {
+  public async rrr(owner: string, repo: string, workflow_id: string): Promise<any[]> {
     try {
       const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs', {
         owner,

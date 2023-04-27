@@ -8,6 +8,7 @@ import { IGithubActionsClient } from './interfaces/i-github-client';
 import { IGithubVariables } from './interfaces/i-github-variables';
 import { IGithubWorkflow } from './interfaces/i-github-workflows';
 import { ErrorHandler } from './tools-utils/error-handler';
+import { WorkflowRun } from './data/workflow-run';
 
 export class GithubActionsClient implements IGithubActionsClient {
   public octokitClient: Octokit;
@@ -166,7 +167,7 @@ export class GithubActionsClient implements IGithubActionsClient {
   /**
    * Lists all workflow runs for a repository.
    */
-  public async ListWorkflowRuns(): Promise<components['schemas']['workflow-run'][]> {
+  public async ListWorkflowRuns(): Promise<WorkflowRun[]> {
     return this.githubWorkFlow.ListWorkflowRuns(this.github_username, this.github_repository);
   }
 
@@ -175,7 +176,7 @@ export class GithubActionsClient implements IGithubActionsClient {
    * @param run_id  The unique identifier of the workflow run.
    * @returns
    */
-  public async GetWorkflowRun(run_id: number): Promise<components['schemas']['workflow-run']> {
+  public async GetWorkflowRun(run_id: number): Promise<WorkflowRun> {
     return this.githubWorkFlow.GetWorkflowRun(this.github_username, this.github_repository, run_id);
   }
 

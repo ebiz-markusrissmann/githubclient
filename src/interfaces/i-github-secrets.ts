@@ -1,4 +1,5 @@
 import { components } from '@octokit/openapi-types';
+import { IActionsSecret } from './responses/I-actions-secret';
 
 export interface IGithubSecret {
   /**
@@ -18,7 +19,7 @@ export interface IGithubSecret {
    * @param {string} secretName - The name of the secret
    * @returns The secret itself without value
    */
-  GetRepositorySecret(owner: string, repo: string, secretName: string): Promise<components['schemas']['actions-secret']>;
+  GetRepositorySecret(owner: string, repo: string, secretName: string): Promise<IActionsSecret>;
 
   /**
    * Deletes a repository secret

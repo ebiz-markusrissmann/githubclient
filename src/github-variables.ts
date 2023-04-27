@@ -1,7 +1,7 @@
-import { components } from '@octokit/openapi-types';
 import { Octokit } from 'octokit';
 import { IGithubVariables } from './interfaces/i-github-variables';
 import { ErrorHandler } from './tools-utils/error-handler';
+import { IActionsVariable } from './interfaces/responses/i-actions-variable';
 
 export class GithubVariables implements IGithubVariables {
   private octokit: Octokit;
@@ -21,7 +21,7 @@ export class GithubVariables implements IGithubVariables {
    * @param {string} repo - The name of the repository
    * @returns All variables of the repository
    */
-  public async ListRepositoryVariables(owner: string, repo: string): Promise<components['schemas']['actions-variable'][]> {
+  public async ListRepositoryVariables(owner: string, repo: string): Promise<IActionsVariable[]> {
     try {
       const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/variables', {
         owner: owner,
@@ -70,7 +70,7 @@ export class GithubVariables implements IGithubVariables {
    * @param {string} variableName - The name of the variable to be gathered
    * @returns The environment variable
    */
-  public async GetRepositoryVariable(owner: string, repo: string, variableName: string): Promise<components['schemas']['actions-variable']> {
+  public async GetRepositoryVariable(owner: string, repo: string, variableName: string): Promise<IActionsVariable> {
     try {
       const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/variables/{name}', {
         owner: owner,

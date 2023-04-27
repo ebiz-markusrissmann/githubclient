@@ -1,4 +1,3 @@
-import { components } from '@octokit/openapi-types';
 import { StatusCodes } from 'http-status-codes';
 import { mock, mockReset } from 'jest-mock-extended';
 import { Octokit } from 'octokit';
@@ -6,6 +5,8 @@ import { ListRepositoryVariablesResponse, OctokitResponseBuilder } from './tools
 import { GithubVariables } from '../src/github-variables';
 import { GithubError } from '../src/models/github-error';
 import { ErrorHandler } from '../src/tools-utils/error-handler';
+import { IActionsVariable } from '../src/interfaces/responses/i-actions-variable';
+import { createActionsVariable } from './factories/fake-actions-variable-factory';
 
 const errorHandler: ErrorHandler = new ErrorHandler();
 
@@ -18,19 +19,8 @@ describe('Test github-variabls.ts', () => {
   });
 
   it('Test ListRepositoryVariables', async () => {
-    const rv1: components['schemas']['actions-variable'] = {
-      name: '',
-      value: '',
-      created_at: '',
-      updated_at: '',
-    };
-
-    const rv2: components['schemas']['actions-variable'] = {
-      name: '',
-      value: '',
-      created_at: '',
-      updated_at: '',
-    };
+    const rv1: IActionsVariable = createActionsVariable();
+    const rv2: IActionsVariable = createActionsVariable();
 
     const data: ListRepositoryVariablesResponse = {
       total_count: 2,
@@ -82,12 +72,7 @@ describe('Test github-variabls.ts', () => {
   });
 
   it('Test GetRepositoryVariable', async () => {
-    const rv1: components['schemas']['actions-variable'] = {
-      name: 'dodo',
-      value: '',
-      created_at: '',
-      updated_at: '',
-    };
+    const rv1: IActionsVariable = createActionsVariable();
 
     const octokitResponse = OctokitResponseBuilder.getResponse(StatusCodes.OK, '', rv1);
 

@@ -1,0 +1,43 @@
+import { IActor } from './i-actor';
+import { IHeadCommit } from './i-head-commit';
+import { IHeadRepository } from './i-head-repository';
+import { IReferencedWorkflow } from './i-referenced-workflow';
+import { IRepository } from './i-repository';
+
+export interface IGithubActionResponse {
+  id: number;
+  name: string;
+  node_id: string;
+  check_suite_id: number;
+  check_suite_node_id: string;
+  head_branch: string;
+  head_sha: string;
+  path: string;
+  run_number: number;
+  event: string;
+  display_title: string;
+  status: string;
+  conclusion: string | null;
+  workflow_id: number;
+  url: string;
+  html_url: string;
+  pull_requests: any[];
+  created_at: string;
+  updated_at: string;
+  actor: IActor;
+  run_attempt: number;
+  referenced_workflows: IReferencedWorkflow[];
+  run_started_at: string;
+  triggering_actor: IActor;
+  jobs_url: string;
+  logs_url: string;
+  check_suite_url: string;
+  artifacts_url: string;
+  cancel_url: string;
+  rerun_url: string;
+  previous_attempt_url: string;
+  workflow_url: string;
+  head_commit: IHeadCommit;
+  repository: IRepository;
+  head_repository: IHeadRepository;
+}

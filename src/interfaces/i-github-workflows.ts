@@ -1,5 +1,6 @@
-import { components } from '@octokit/openapi-types';
-import { Workflow } from '@octokit/webhooks-types';
+import { Workflow } from '../data/workflow';
+import { WorkflowRun } from '../data/workflow-run';
+import { IWorkflowUsage } from './responses/i-workflow-usage';
 
 export interface IGithubWorkflow {
   /**
@@ -34,7 +35,7 @@ export interface IGithubWorkflow {
    * @param {string} owner - The owner of the repository
    * @param {string} repo - The name of the repository
    */
-  ListWorkflowRuns(owner: string, repo: string): Promise<components['schemas']['workflow-run'][]>;
+  ListWorkflowRuns(owner: string, repo: string): Promise<WorkflowRun[]>;
 
   /**
    *
@@ -42,7 +43,7 @@ export interface IGithubWorkflow {
    * @param {string} repo - The name of the repository
    * @param {number} run_id - The unique identifier of the workflow run
    */
-  GetWorkflowRun(owner: string, repo: string, run_id: number): Promise<components['schemas']['workflow-run']>;
+  GetWorkflowRun(owner: string, repo: string, run_id: number): Promise<WorkflowRun>;
 
   /**
    * Gets a redirect URL to download an archive of log files for a workflow run. This link expires after 1 minute.
@@ -59,7 +60,7 @@ export interface IGithubWorkflow {
    * @param workflow_id - The ID of the workflow
    * @returns
    */
-  GetWorkflowUsage(owner: string, repo: string, workflow_id: number): Promise<components['schemas']['workflow-usage']>;
+  GetWorkflowUsage(owner: string, repo: string, workflow_id: number): Promise<IWorkflowUsage>;
 
   /**
    * Disables a workflow and sets the state of the workflow to disabled_manually. You can replace workflow_id with the workflow file name. For example, you could use main.yaml.

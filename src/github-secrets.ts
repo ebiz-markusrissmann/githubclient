@@ -1,8 +1,9 @@
-import { components } from '@octokit/openapi-types';
 import { base64_variants, crypto_box_seal, from_base64, from_string, ready, to_base64 } from 'libsodium-wrappers';
 import { Octokit } from 'octokit';
 import { IGithubSecret } from './interfaces/i-github-secrets';
 import { ErrorHandler } from './tools-utils/error-handler';
+import { IActionsSecret } from './interfaces/responses/I-actions-secret';
+import { IActionsPublicKey } from './interfaces/responses/i-actions-public-key';
 
 export class GithubSecrets implements IGithubSecret {
   private octokit: Octokit;
@@ -21,7 +22,7 @@ export class GithubSecrets implements IGithubSecret {
    * @param {string} repo - The name of the repository
    * @returns A list of all secrets
    */
-  public async ListRepositorySecrets(owner: string, repo: string): Promise<components['schemas']['actions-secret'][]> {
+  public async ListRepositorySecrets(owner: string, repo: string): Promise<IActionsSecret[]> {
     try {
       const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/secrets', {
         owner: owner,
@@ -44,7 +45,7 @@ export class GithubSecrets implements IGithubSecret {
    * @param {string} secretName - The name of the secret
    * @returns The secret itself without value
    */
-  public async GetRepositorySecret(owner: string, repo: string, secretName: string): Promise<components['schemas']['actions-secret']> {
+  public async GetRepositorySecret(owner: string, repo: string, secretName: string): Promise<IActionsSecret> {
     try {
       const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/secrets/{secret_name}', {
         owner: owner,
@@ -66,7 +67,7 @@ export class GithubSecrets implements IGithubSecret {
    * @param {string} repo - The name of the repository
    * @returns
    */
-  async GetPublicKey(owner: string, repo: string): Promise<components['schemas']['actions-public-key']> {
+  async GetPublicKey(owner: string, repo: string): Promise<IActionsPublicKey> {
     try {
       const response = await this.octokit.request('GET /repos/{owner}/{repo}/actions/secrets/public-key', {
         owner: owner,

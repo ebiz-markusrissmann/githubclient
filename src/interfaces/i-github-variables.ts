@@ -1,4 +1,4 @@
-import { components } from '@octokit/openapi-types';
+import { IActionsVariable } from './responses/i-actions-variable';
 
 export interface IGithubVariables {
   /**
@@ -7,7 +7,7 @@ export interface IGithubVariables {
    * @param {string} repo - The name of the repository
    * @returns All variables of the repository
    */
-  ListRepositoryVariables(owner: string, repo: string): Promise<components['schemas']['actions-variable'][]>;
+  ListRepositoryVariables(owner: string, repo: string): Promise<IActionsVariable[]>;
 
   /**
    * Creates a repository variable that you can reference in a GitHub Actions workflow.
@@ -26,7 +26,7 @@ export interface IGithubVariables {
    * @param {string} variableName - The name of the variable to be gathered
    * @returns The environment variable
    */
-  GetRepositoryVariable(owner: string, repo: string, variableName: string): Promise<components['schemas']['actions-variable']>;
+  GetRepositoryVariable(owner: string, repo: string, variableName: string): Promise<IActionsVariable>;
 
   /**
    * Checks if a specific repository variable exists
