@@ -158,7 +158,7 @@ export class GithubWorkflow {
         },
       });
 
-      return response.url;
+      return response.headers.location;
     } catch (err: any) {
       this.errorHandler.handleError(err);
     }
