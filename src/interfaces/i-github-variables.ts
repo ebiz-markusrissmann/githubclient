@@ -6,6 +6,7 @@ export interface IGithubVariables {
    * Lists all organization variables.
    * @param {string} org - The name of the organization
    * @returns All variables of the organization
+
    * @see https://docs.github.com/en/rest/reference/actions#list-organization-secrets
    */
   ListOrganizationVariables(org: string): Promise<IActionsVariable[]>;
@@ -28,6 +29,7 @@ export interface IGithubVariables {
   GetOrganizationVariable(org: string, variableName: string): Promise<IActionsVariable>;
 
   /**
+
    * Checks if a specific organization variable exists
    * @param {string} org - The name of the organization
    * @param {string} variableName - The name of the variable to be gathered
@@ -43,6 +45,7 @@ export interface IGithubVariables {
    * @returns
    */
   UpdateOrganizationVariable(org: string, variableName: string, value: string): Promise<number>;
+
   /**
    * List all repository variables identified by owner and repository
    * @param {string} owner - The owner of the repository
