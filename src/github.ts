@@ -1,6 +1,7 @@
 import { components } from '@octokit/openapi-types/types';
 import { Workflow } from '@octokit/webhooks-types';
 import { Octokit } from 'octokit';
+import { WorkflowRun } from './data/workflow-run';
 import { GithubSecrets } from './github-secrets';
 import { GithubVariables } from './github-variables';
 import { GithubWorkflow } from './github-workflow';
@@ -8,7 +9,6 @@ import { IGithubActionsClient } from './interfaces/i-github-client';
 import { IGithubVariables } from './interfaces/i-github-variables';
 import { IGithubWorkflow } from './interfaces/i-github-workflows';
 import { ErrorHandler } from './tools-utils/error-handler';
-import { WorkflowRun } from './data/workflow-run';
 
 export class GithubActionsClient implements IGithubActionsClient {
   public octokitClient: Octokit;

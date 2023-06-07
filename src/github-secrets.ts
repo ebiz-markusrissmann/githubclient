@@ -1,9 +1,9 @@
 import { base64_variants, crypto_box_seal, from_base64, from_string, ready, to_base64 } from 'libsodium-wrappers';
 import { Octokit } from 'octokit';
 import { IGithubSecret } from './interfaces/i-github-secrets';
-import { ErrorHandler } from './tools-utils/error-handler';
-import { IActionsSecret } from './interfaces/responses/I-actions-secret';
 import { IActionsPublicKey } from './interfaces/responses/i-actions-public-key';
+import { IActionsSecret } from './interfaces/responses/I-actions-secret';
+import { ErrorHandler } from './tools-utils/error-handler';
 
 export class GithubSecrets implements IGithubSecret {
   private octokit: Octokit;

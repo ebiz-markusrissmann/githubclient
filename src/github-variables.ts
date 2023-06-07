@@ -1,7 +1,7 @@
 import { Octokit } from 'octokit';
 import { IGithubVariables } from './interfaces/i-github-variables';
-import { ErrorHandler } from './tools-utils/error-handler';
 import { IActionsVariable } from './interfaces/responses/i-actions-variable';
+import { ErrorHandler } from './tools-utils/error-handler';
 
 export class GithubVariables implements IGithubVariables {
   private octokit: Octokit;

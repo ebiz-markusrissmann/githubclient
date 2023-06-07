@@ -1,9 +1,9 @@
 import { Octokit } from 'octokit';
-import { ErrorHandler } from './tools-utils/error-handler';
 import { Workflow } from './data/workflow';
 import { WorkflowRun } from './data/workflow-run';
 import { IGithubWorkflow } from './interfaces/i-github-workflows';
 import { IWorkflowUsage } from './interfaces/responses/i-workflow-usage';
+import { ErrorHandler } from './tools-utils/error-handler';
 
 export class GithubWorkflow implements IGithubWorkflow {
   private octokit: Octokit;
