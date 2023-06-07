@@ -8,6 +8,7 @@ import { GithubWorkflow } from './github-workflow';
 import { IGithubActionsClient } from './interfaces/i-github-client';
 import { IGithubVariables } from './interfaces/i-github-variables';
 import { IGithubWorkflow } from './interfaces/i-github-workflows';
+import { IActionsVariable } from './interfaces/responses/i-actions-variable';
 import { ErrorHandler } from './tools-utils/error-handler';
 
 export class GithubActionsClient implements IGithubActionsClient {
@@ -36,6 +37,21 @@ export class GithubActionsClient implements IGithubActionsClient {
     this.githubSecrets = new GithubSecrets(this.octokitClient, this.github_apiVersion, this.errorHandler);
     this.github_username = github_username;
     this.github_repository = github_repository;
+  }
+  UpdateOrganizationVariable(org: string, variableName: string, value: string): Promise<number> {
+    return this.githubVariables.UpdateOrganizationVariable(org, variableName, value);
+  }
+  OrganizationVariableExists(org: string, variableName: string): Promise<boolean> {
+    return this.githubVariables.OrganizationVariableExists(org, variableName);
+  }
+  GetOrganizationVariable(org: string, variableName: string): Promise<IActionsVariable> {
+    return this.githubVariables.GetOrganizationVariable(org, variableName);
+  }
+  CreateOrganizationVariable(org: string, variableName: string, value: string): Promise<number> {
+    return this.githubVariables.CreateOrganizationVariable(org, variableName, value);
+  }
+  ListOrganizationVariables(org: string): Promise<IActionsVariable[]> {
+    return this.githubVariables.ListOrganizationVariables(org);
   }
 
   /**

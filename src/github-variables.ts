@@ -289,4 +289,23 @@ export class GithubVariables implements IGithubVariables {
       this.errorHandler.handleError(err);
     }
   }
+
+  /** Creates or updates a specific organization variable
+   * @param {string} org - The name of the organization
+   * @param {string} variableName - The name of the variable to be gathered
+   * @param {string} value - The value of the repository variable
+   * @returns
+   * 
+   */
+  async CreateOrUpdateOrganizationVariable(org: string, variableName: string, value: string): Promise<number> {
+    try {
+      if (await this.OrganizationVariableExists(org, variableName)) {
+        return await this.UpdateOrganizationVariable(org, variableName, value);
+      } else {
+        return await this.CreateOrganizationVariable(org, variableName, value);
+      }
+    } catch (err: any) {
+      this.errorHandler.handleError(err);
+    }
+  }
 }

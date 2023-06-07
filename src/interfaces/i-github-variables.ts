@@ -1,6 +1,48 @@
 import { IActionsVariable } from './responses/i-actions-variable';
 
 export interface IGithubVariables {
+
+  /**
+   * Lists all organization variables.
+   * @param {string} org - The name of the organization
+   * @returns All variables of the organization
+   * @see https://docs.github.com/en/rest/reference/actions#list-organization-secrets
+   */
+  ListOrganizationVariables(org: string): Promise<IActionsVariable[]>;
+
+  /**
+   * Creates an organization variable that you can reference in a GitHub Actions workflow.
+   * @param {string} org - The name of the organization
+   * @param {string} variableName - The name of the variable to be created
+   * @param {string} value - The value of the created variable
+   * @returns 201, if created
+   */
+  CreateOrganizationVariable(org: string, variableName: string, value: string): Promise<number>;
+
+  /**
+   * Gets a specific variable in an organization.
+   * @param {string} org - The name of the organization
+   * @param {string} variableName - The name of the variable to be gathered
+   * @returns The environment variable
+   */
+  GetOrganizationVariable(org: string, variableName: string): Promise<IActionsVariable>;
+
+  /**
+   * Checks if a specific organization variable exists
+   * @param {string} org - The name of the organization
+   * @param {string} variableName - The name of the variable to be gathered
+   * @returns true, if exists, otherwise false
+   */
+  OrganizationVariableExists(org: string, variableName: string): Promise<boolean>;
+
+  /**
+   * Updates a specific organization variable
+   * @param {string} org - The name of the organization
+   * @param {string} variableName - The name of the variable to be gathered
+   * @param {string} value - The value of the organization variable
+   * @returns
+   */
+  UpdateOrganizationVariable(org: string, variableName: string, value: string): Promise<number>;
   /**
    * List all repository variables identified by owner and repository
    * @param {string} owner - The owner of the repository
