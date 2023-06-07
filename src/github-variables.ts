@@ -180,4 +180,113 @@ export class GithubVariables implements IGithubVariables {
       this.errorHandler.handleError(err);
     }
   }
+
+  /** List variables for an organization
+   *  @param {string} org - The name of the organization
+   * @returns All variables of the organization
+   *
+   */
+
+  async ListOrganizationVariables(org: string): Promise<IActionsVariable[]> {
+    try {
+      const response = await this.octokit.request('GET /orgs/{org}/actions/variables', {
+        org: org,
+        headers: {
+          'X-GitHub-Api-Version': this.apiVersion,
+        },
+      });
+
+      return response.data.variables;
+    } catch (err: any) {
+      this.errorHandler.handleError(err);
+    }
+  }
+
+  /** Create an organization variable
+   * @param {string} org - The name of the organization
+   * @param {string} variableName - The name of the variable to be created
+   * @param {string} value - The value of the created variable
+   * @returns 201, if created
+   *
+   */
+  async CreateOrganizationVariable(org: string, variableName: string, value: string): Promise<number> {
+    try {
+      const response = await this.octokit.request('POST /orgs/{org}/actions/variables', {
+        org: org,
+        name: variableName,
+        value: value,
+        visibility: 'all',
+        headers: {
+          'X-GitHub-Api-Version': this.apiVersion,
+        },
+      });
+
+      return response.status;
+    } catch (err: any) {
+      this.errorHandler.handleError(err);
+    }
+  }
+
+  /** Get an organization variable
+   * @param {string} org - The name of the organization
+   * @param {string} variableName - The name of the variable to be gathered
+   * @returns The environment variable
+   */
+  async GetOrganizationVariable(org: string, variableName: string): Promise<IActionsVariable> {
+    try {
+      const response = await this.octokit.request('GET /orgs/{org}/actions/variables/{name}', {
+        org: org,
+        name: variableName,
+        headers: {
+          'X-GitHub-Api-Version': this.apiVersion,
+        },
+      });
+      return response.data;
+    } catch (err: any) {
+      this.errorHandler.handleError(err);
+    }
+  }
+
+  /** Checks if a specific organization variable exists
+   * @param {string} org - The name of the organization
+   * @param {string} variableName - The name of the variable to be gathered
+   * @returns true, if exists, otherwise false
+   */
+  async OrganizationVariableExists(org: string, variableName: string): Promise<boolean> {
+    try {
+      await this.octokit.request('GET /orgs/{org}/actions/variables/{name}', {
+        org: org,
+        name: variableName,
+        headers: {
+          'X-GitHub-Api-Version': this.apiVersion,
+        },
+      });
+
+      return true;
+    } catch (err: any) {
+      return false;
+    }
+  }
+
+  /** Updates an organization variable that you can reference in a GitHub Actions workflow.
+   * @param {string} org - The name of the organization
+   * @param {string} variableName - The name of the variable to be gathered
+   * @param {string} value - The value of the repository variable
+   * @returns 200, if updated
+   */
+  async UpdateOrganizationVariable(org: string, variableName: string, value: string): Promise<number> {
+    try {
+      const response = await this.octokit.request('PATCH /orgs/{org}/actions/variables/{name}', {
+        org: org,
+        name: variableName,
+        value: value,
+        headers: {
+          'X-GitHub-Api-Version': this.apiVersion,
+        },
+      });
+      return response.status;
+    } catch (err: any) {
+      this.errorHandler.handleError(err);
+    }
+  }
 }

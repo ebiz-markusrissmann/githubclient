@@ -1,5 +1,6 @@
 import { components } from '@octokit/openapi-types';
 import { Workflow } from '@octokit/webhooks-types';
+import { IActionsVariable } from './responses/i-actions-variable';
 import { WorkflowRun } from '../data/workflow-run';
 
 export interface IGithubActionsClient {
@@ -148,4 +149,42 @@ export interface IGithubActionsClient {
    * @returns 204 indicates success
    */
   EnableWorkflow(workflow_id: number): Promise<number>;
+
+  /**
+   * Updates an organization variable that you can reference in a GitHub Actions workflow.
+   * @param {string} org - The name of the organization
+   * @param {string} variableName - The name of the variable to be created
+   */
+  UpdateOrganizationVariable(org: string, variableName: string, value: string): Promise<number>;
+
+  /**
+   * Checks if a specific organization variable exists
+   * @param {string} org - The name of the organization
+   * @param {string} variableName - The name of the variable to be gathered
+   */
+  OrganizationVariableExists(org: string, variableName: string): Promise<boolean>;
+
+  /** Get an organization variable
+   * @param {string} org - The name of the organization
+   * @param {string} variableName - The name of the variable to be gathered
+   * @returns The environment variable
+   */
+  GetOrganizationVariable(org: string, variableName: string): Promise<IActionsVariable>;
+
+  /** Create an organization variable
+   * @param {string} org - The name of the organization
+   * @param {string} variableName - The name of the variable to be created
+   * @param {string} value - The value of the created variable
+   * @returns 201, if created
+   *
+   */
+  CreateOrganizationVariable(org: string, variableName: string, value: string): Promise<number>;
+
+  /** List variables for an organization
+   *  @param {string} org - The name of the organization
+   * @returns All variables of the organization
+   *
+   */
+
+  ListOrganizationVariables(org: string): Promise<IActionsVariable[]>;
 }
