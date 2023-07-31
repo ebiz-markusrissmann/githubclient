@@ -46,7 +46,7 @@
     "prettier": "2.8.8",
     "semantic-release": "21.0.7",
     "shx": "0.3.4",
-    "ts-jest": "29.1.0",
+    "ts-jest": "29.1.1",
     "typescript-documentation": "3.0.2"
   },
   "bugs": {
