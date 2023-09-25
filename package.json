@@ -43,7 +43,7 @@
     "jest-junit": "^16.0.0",
     "jest-mock-extended": "^3.0.4",
     "prettier": "^3.0.3",
-    "semantic-release": "^21.1.1",
+    "semantic-release": "^22.0.5",
     "shx": "^0.3.4",
     "ts-jest": "^29.1.0"
   },
