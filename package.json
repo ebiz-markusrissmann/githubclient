@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "^8.0.2",
-    "@octokit/openapi-types": "^18.0.0",
+    "@octokit/openapi-types": "^19.0.0",
     "@octokit/webhooks-types": "^7.3.1",
     "http-status-codes": "^2.2.0",
     "istanbul-lib-coverage": "^3.2.0",
